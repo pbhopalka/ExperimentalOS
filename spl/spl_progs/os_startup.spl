@@ -38,6 +38,11 @@ SP = 3*512;
 PTBR = PTBR_Process0
 PTLR = 4;
 
+//....................Loading FAT and df to memory
+
+load (5, 19);
+load (6, 20);
+
 //.....................Interrupt 1 Routine
 
 load (11, 5);
