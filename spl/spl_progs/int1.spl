@@ -9,7 +9,7 @@ sysCallNo = [physicalSP - 1];
 
 //Conditions
 
-//.............................................Implementation of Create
+//.............................Implementation of Create....................
 
 if (sysCallNo == 1) then
 		alias filename S2;
@@ -63,6 +63,8 @@ if (sysCallNo == 1) then
 				counter = counter + 1;
 		endwhile;
 		store (1, freeDiskBlock);
+		print freeDiskBlock;
+		print [freeDiskBlock+DISK_LIST];
 		[freeDiskBlock + DISK_LIST] = 1;
 		store (5, 19);
 		store (6, 20);
