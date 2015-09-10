@@ -1,0 +1,25 @@
+alias physicalSP S0;
+physicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
+
+//Getting system call number and arguments from stack
+
+alias sysCallNo S1;
+sysCallNo = physicalSP - 1;
+
+
+//Conditions
+
+if (sysCallNo == 1) then //Implementation of Create
+	alias argument1 S2;
+	argument1 = physicalSP - 3;
+	alias currentFile S3;
+	while (FAT != NULL)
+			
+
+endif;
+
+if (sysCallNo == 4) then //Implementation of Delete
+
+
+
+endif; 

@@ -1,0 +1,103 @@
+//...................OS Startup Code.........................//
+
+//....................Exception Handler
+
+load (7, 1); //loading exception handler
+load (8, 2); 
+
+//..................Interrupt 7 Routine
+
+load (23, 17); //loading interrupt 7 routine
+load (24, 18);
+
+//...................Loading Process 0 on the memory
+
+[READY_LIST + 0] = 0; //setting PID of init to 0
+load (25, 21); //loading init program to memory
+load (26, 22);
+load (27, 23);
+alias PTBR_Process0 S1;
+PTBR_Process0 = 1024 + 0 * 8;
+[PTBR_Process0 + 0] = 25; //Copying physical memory address to page table
+[PTBR_Process0 + 1] = "01"; // copying auxillary information to page table
+[PTBR_Process0 + 2] = 26;
+[PTBR_Process0 + 3] = "01";
+[PTBR_Process0 + 4] = 27;
+[PTBR_Process0 + 5] = "01";
+[PTBR_Process0 + 6] = 28;
+[PTBR_Process0 + 7] = "01";
+[READY_LIST + 1] = 2; //Setting the STATE in PCB as running
+[READY_LIST + 2] = 3*512;
+SP = 3*512;
+[READY_LIST + 3] = SP;
+//[READY_LIST + 4] = 0;
+[READY_LIST + 5] = PTBR_Process0;
+[READY_LIST + 6] = 4;
+[30*512] = 5; //Setting up IP for init in the stack
+
+PTBR = PTBR_Process0
+PTLR = 4;
+
+//....................Loading FAT and df to memory
+
+load (5, 19);
+load (6, 20);
+
+//.....................Interrupt 1 Routine
+
+load (11, 5);
+load (12, 6);
+
+//......................Timer Interrupt
+
+load (9, 3); //loading timer interrupt
+load (10, 4);
+
+//......................Loading Process 1 on to the memory
+
+//[READY_LIST + 32] = 1; // Sets PID to 1
+//load (29, 25); // loading Process 1 into memory
+//alias PTBR_Process1 S0;
+//PTBR_Process1 = 1024 + 1 * 8;
+//[PTBR_Process1 + 0] = 29; //Physical Page number for logical page 0
+//[PTBR_Process1 + 1] = "01"; //Not referenced and valid
+//[PTBR_Process1 + 2] = -1; //Invalid Page number for logical page 1
+//[PTBR_Process1 + 3] = "00"; //Not referenced and invalid
+//[PTBR_Process1 + 4] = -1;
+//[PTBR_Process1 + 5] = "00";
+//[PTBR_Process1 + 6] = 30;
+//[PTBR_Process1 + 7] = "01";
+//[READY_LIST + 33] = 2; //State is ready
+//[READY_LIST + 34] = 3*512; //Setting up the BP in PCB
+//[READY_LIST + 35] = 3*512; //Setting up the SP in PCB
+//[READY_LIST + 36] = 0; //Setting up the entry for IP to logical address 0
+//[READY_LIST + 37] = PTBR_Process1;
+//[READY_LIST + 38] = 4; //PTLR
+
+//PTBR = PTBR_Process1;
+//PTLR = 4;
+
+//.....................Loading Process 2 on to the memory
+
+//[READY_LIST + 2 * 32] = 2; //Setting up the PID as 2
+//load (31, 27); //loading from block 26 to 31
+//alias PTBR_Process2 S1;
+// PTBR_Process2 = 1024 + 2 * 8;
+//[PTBR_Process2 + 0] = 31; //Physical Page number for logical page 0
+//[PTBR_Process2 + 1] = "01"; // Not referenced and valid
+//[PTBR_Process2 + 2] = -1;
+//[PTBR_Process2 + 3] = "00"; 
+//[PTBR_Process2 + 4] = -1; 
+//[PTBR_Process2 + 5] = "00"; 
+//[PTBR_Process2 + 6] = 32; 
+//[PTBR_Process2 + 7] = "01"; 
+//[READY_LIST + 2 * 32 + 1] = 1;
+//[READY_LIST + 2 * 32 + 2] = 3*512;
+//[READY_LIST + 2 * 32 + 3] = 3*512;
+//[READY_LIST + 2 * 32 + 4] = 0;
+//[READY_LIST + 2 * 32 + 5] = PTBR_Process2; 
+//[READY_LIST + 2 * 32 + 6] = 4;
+
+ireturn;
+
+
