@@ -24,7 +24,7 @@ if (sysCallNo == 1) then
 				endif;
 				FATentry = FATentry + 8;
 		endwhile;
-		print "File does not exist. Creating new file...";
+		print "Creating new file...";
 		alias freeDiskBlock S3;
 		freeDiskBlock = 24;
 		while (freeDiskBlock < 448) do
@@ -34,7 +34,6 @@ if (sysCallNo == 1) then
 				freeDiskBlock = freeDiskBlock + 1;
 		endwhile;
 		if (freeDiskBlock == 448) then
-				print "No free space in disk";
 				[physicalSP - 2] = -1;
 				ireturn;
 		endif;
@@ -42,13 +41,11 @@ if (sysCallNo == 1) then
 		freeFAT = FAT;
 		while (freeFAT < FAT + 512) do
 				if ([freeFAT] == -1) then
-						print "Free FAT location found";
 						break;
 				endif;
 				freeFAT = freeFAT + 8;
 		endwhile;
 		if (freeFAT == FAT + 512) then
-				print "FAT Block is not empty";
 				[physicalSP - 2] = -1;
 				ireturn;
 		endif;
