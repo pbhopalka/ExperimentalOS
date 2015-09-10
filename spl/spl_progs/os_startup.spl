@@ -35,7 +35,7 @@ SP = 3*512;
 [READY_LIST + 6] = 4;
 [30*512] = 5; //Setting up IP for init in the stack
 
-PTBR = PTBR_Process0
+PTBR = PTBR_Process0;
 PTLR = 4;
 
 //....................Loading FAT and df to memory

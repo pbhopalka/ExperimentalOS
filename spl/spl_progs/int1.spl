@@ -4,22 +4,68 @@ physicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
 //Getting system call number and arguments from stack
 
 alias sysCallNo S1;
-sysCallNo = physicalSP - 1;
+sysCallNo = [physicalSP - 1];
 
 
 //Conditions
 
-if (sysCallNo == 1) then //Implementation of Create
-	alias argument1 S2;
-	argument1 = physicalSP - 3;
-	alias currentFile S3;
-	while (FAT != NULL)
-			
+//.............................................Implementation of Create
 
+if (sysCallNo == 1) then
+		alias filename S2;
+		filename = [physicalSP - 3];
+		alias FATentry S3;
+		FATentry = FAT + 0;
+		while (FATentry < FAT + 512) do
+				if ([FATentry] == filename) then
+						print "File already exists";
+						[physicalSP - 2] = 0;
+						ireturn;
+				endif;
+				FATentry = FATentry + 8;
+		endwhile;
+		print "File does not exist. Creating new file...";
+		alias freeDiskBlock S3;
+		freeDiskBlock = 24;
+		while (freeDiskBlock < 448) do
+				if ([freeDiskBlock + DISK_LIST] == 0) then
+						break;
+				endif;
+				freeDiskBlock = freeDiskBlock + 1;
+		endwhile;
+		if (freeDiskBlock == 448) then
+				print "No free space in disk";
+				[physicalSP - 2] = -1;
+				ireturn;
+		endif;
+		alias freeFAT S4;
+		freeFAT = FAT;
+		while (freeFAT < FAT + 512) do
+				if ([freeFAT] == -1) then
+						print "Free FAT location found";
+						break;
+				endif;
+				freeFAT = freeFAT + 8;
+		endwhile;
+		if (freeFAT == FAT + 512) then
+				print "FAT Block is not empty";
+				[physicalSP - 2] = -1;
+				ireturn;
+		endif;
+		[freeFAT + 0] = filename;
+		[freeFAT + 1] = 0;
+		[freeFAT + 2] = freeDiskBlock;
+		load (1, freeDiskBlock);
+		alias counter S5;
+		counter = 0;
+		while (counter < 256) do
+				[counter + 512] = -1;
+				counter = counter + 1;
+		endwhile;
+		store (1, freeDiskBlock);
+		[freeDiskBlock + DISK_LIST] = 1;
+		store (5, 19);
+		store (6, 20);
+		[physicalSP - 2] = 0;
 endif;
-
-if (sysCallNo == 4) then //Implementation of Delete
-
-
-
-endif; 
+ireturn;
