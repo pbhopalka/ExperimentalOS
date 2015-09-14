@@ -67,6 +67,39 @@ endif;
 
 //...........................Implementation of Close.........................
 
-
+if (sysCallNo == 3) then
+  alias fileDescriptor S2;
+  fileDescriptor = [physicalSP - 3];
+  alias i S3;
+  i = 0;
+  while (i < 8) do
+    if (i == fileDescriptor) then
+      break;
+    endif;
+    i = i + 1;
+  endwhile;
+  if (i == 8) then
+    print ("Invalid File");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+  alias PID S3;
+  PID = (PTBR - 1024)/8;
+  if ([READY_LIST + 32 * PID + fileDescriptor] == -1) then
+    print ("Failure");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+  alias sysFileTable S4;
+  sysFileTable = [READY_LIST + 32 * PID + fileDescriptor];
+  if ([sysFileTable + 1] == 0) then
+    [sysFileTable] = -1;
+  endif;
+  if ([sysFileTable + 1] != 0) then
+    [sysFileTable + 1] = [sysFileTable + 1] -1;
+  endif;
+  [READY_LIST + 32 * PID + fileDescriptor] = -1;
+  [physicalSP - 2] = 0; //Success
+endif;
 
 ireturn;
