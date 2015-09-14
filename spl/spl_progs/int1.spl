@@ -24,7 +24,7 @@ if (sysCallNo == 1) then
 				endif;
 				FATentry = FATentry + 8;
 		endwhile;
-		print "File does not exist. Creating new file...";
+		print "Creating new file...";
 		alias freeDiskBlock S3;
 		freeDiskBlock = 24;
 		while (freeDiskBlock < 448) do
@@ -70,4 +70,70 @@ if (sysCallNo == 1) then
 		store (6, 20);
 		[physicalSP - 2] = 0;
 endif;
+
+//.............................Implementation of Delete....................
+
+if (sysCallNo == 4) then
+	alias filename S2;
+	filename = [physicalSP - 3];
+	alias FATentry S3;
+	FATentry = FAT + 0;
+	while (FATentry < FAT + 512) do
+		if ([FATentry] == filename) then
+			print ("File exists");
+			break;
+		endif;
+		FATentry = FATentry + 8;
+	endwhile;
+	if (FATentry == FAT + 512) then
+		print ("File does not exist");
+		[physicalSP - 2] = -1;
+		ireturn;
+	endif;
+	alias sysFileTable S4;
+	sysFileTable = FILE_TABLE;
+	while (sysFileTable < FILE_TABLE + 128) do
+		if ([sysFileTable] == FATentry) then
+			print(FATentry);
+			print("Close the file before deleting");
+			[physicalSP - 2] = -1;
+			ireturn;
+		endif;
+		sysFileTable = sysFileTable + 2;
+	endwhile;
+	alias basicBlock S4;
+	basicBlock = [FATentry + 2];
+	load (1, basicBlock);
+	alias i S5;
+	alias counter S6;
+	alias dataBlock S7;
+	i = 0;
+	while (i < 256) do
+		dataBlock = [SCRATCHPAD + i];
+		if (dataBlock != -1) then
+			load (1, dataBlock);
+			counter = 0;
+			while (counter < 512) do
+				[SCRATCHPAD + counter] = "";
+				counter = counter + 1;
+			endwhile;
+			store(1, dataBlock);
+			load (1, basicBlock);
+			[DISK_LIST + dataBlock] = 0;
+			dataBlock = "";
+		endif;
+		i = i + 1;
+	endwhile;
+	store(1, basicBlock);
+	[DISK_LIST + basicBlock] = 0;
+	[FATentry] = -1;
+	[FATentry + 1] = 0;
+	[FATentry + 2] = -1;
+
+	store(5, 19);
+	store(6, 20);
+	print ("Delete success");
+	[physicalSP - 2] = 0;
+endif;
+
 ireturn;

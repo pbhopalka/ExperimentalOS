@@ -85,20 +85,18 @@ if (sysCallNo == 3) then
   endif;
   alias PID S3;
   PID = (PTBR - 1024)/8;
-  if ([READY_LIST + 32 * PID + fileDescriptor] == -1) then
+  alias sysFileTable S4;
+  sysFileTable = [READY_LIST + 32 * PID + (2 * fileDescriptor) + 15];
+  if (sysFileTable == -1) then
     print ("Failure");
     [physicalSP - 2] = -1;
     ireturn;
   endif;
-  alias sysFileTable S4;
-  sysFileTable = [READY_LIST + 32 * PID + fileDescriptor];
+  [sysFileTable + 1] = [sysFileTable + 1] - 1;
   if ([sysFileTable + 1] == 0) then
     [sysFileTable] = -1;
   endif;
-  if ([sysFileTable + 1] != 0) then
-    [sysFileTable + 1] = [sysFileTable + 1] -1;
-  endif;
-  [READY_LIST + 32 * PID + fileDescriptor] = -1;
+  sysFileTable = -1;
   [physicalSP - 2] = 0; //Success
 endif;
 
