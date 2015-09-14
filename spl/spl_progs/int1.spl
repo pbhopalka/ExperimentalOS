@@ -13,7 +13,10 @@ sysCallNo = [physicalSP - 1];
 
 if (sysCallNo == 1) then
 		alias filename S2;
-		filename = [physicalSP - 3];
+		filename = [physicalSP - 3]; //Get argument from stack
+
+		//Checking if file already exists
+
 		alias FATentry S3;
 		FATentry = FAT + 0;
 		while (FATentry < FAT + 512) do
@@ -24,6 +27,9 @@ if (sysCallNo == 1) then
 				endif;
 				FATentry = FATentry + 8;
 		endwhile;
+
+		//Checking for a free disk block
+
 		print "Creating new file...";
 		alias freeDiskBlock S3;
 		freeDiskBlock = 24;
@@ -38,6 +44,9 @@ if (sysCallNo == 1) then
 				[physicalSP - 2] = -1;
 				ireturn;
 		endif;
+
+		//Checking for free FAT location
+
 		alias freeFAT S4;
 		freeFAT = FAT;
 		while (freeFAT < FAT + 512) do
@@ -52,6 +61,9 @@ if (sysCallNo == 1) then
 				[physicalSP - 2] = -1;
 				ireturn;
 		endif;
+
+		//Updating FAT entry, Disk free list
+
 		[freeFAT + 0] = filename;
 		[freeFAT + 1] = 0;
 		[freeFAT + 2] = freeDiskBlock;
@@ -63,8 +75,6 @@ if (sysCallNo == 1) then
 				counter = counter + 1;
 		endwhile;
 		store (1, freeDiskBlock);
-		print freeDiskBlock;
-		print [freeDiskBlock+DISK_LIST];
 		[freeDiskBlock + DISK_LIST] = 1;
 		store (5, 19);
 		store (6, 20);
@@ -75,7 +85,10 @@ endif;
 
 if (sysCallNo == 4) then
 	alias filename S2;
-	filename = [physicalSP - 3];
+	filename = [physicalSP - 3]; //Getting argument from stack
+
+	//Checking if file exists or not
+
 	alias FATentry S3;
 	FATentry = FAT + 0;
 	while (FATentry < FAT + 512) do
@@ -90,6 +103,9 @@ if (sysCallNo == 4) then
 		[physicalSP - 2] = -1;
 		ireturn;
 	endif;
+
+	//Checking if the file is still open. Close the file before deleting
+
 	alias sysFileTable S4;
 	sysFileTable = FILE_TABLE;
 	while (sysFileTable < FILE_TABLE + 128) do
@@ -101,6 +117,10 @@ if (sysCallNo == 4) then
 		endif;
 		sysFileTable = sysFileTable + 2;
 	endwhile;
+
+	//Updating basic block, data block of the file to be deleted
+	//Updating FAT entry, disk free list
+	
 	alias basicBlock S4;
 	basicBlock = [FATentry + 2];
 	load (1, basicBlock);

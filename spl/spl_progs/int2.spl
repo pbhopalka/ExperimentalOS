@@ -12,7 +12,10 @@ sysCallNo = [physicalSP - 1];
 
 if (sysCallNo == 2) then
   alias filename S2;
-  filename = [physicalSP - 3];
+  filename = [physicalSP - 3]; //Getting the argument from stack
+
+  //Checking if the file already exists
+
   alias FATentry S3;
   FATentry = FAT + 0;
   while (FATentry < FAT + 512) do
@@ -26,6 +29,10 @@ if (sysCallNo == 2) then
     [physicalSP - 2] = -1;
     ireturn;
   endif;
+
+  //Check if there is space in System-Wide Open File table
+  //and get the location in it to put an entry for the file
+
   alias sysFileTable S4;
   sysFileTable = FILE_TABLE + 0;
   while (sysFileTable < FILE_TABLE + 128) do
@@ -43,6 +50,10 @@ if (sysCallNo == 2) then
     [physicalSP - 2] = -1;
     ireturn;
   endif;
+
+  //Checking if per-process file open table is not full
+  //per-process file table exists in PCB
+
   alias PID S5;
   PID = (PTBR - 1024)/8;
   alias i S6;
@@ -58,6 +69,10 @@ if (sysCallNo == 2) then
     [physicalSP - 2] = -1;
     ireturn;
   endif;
+
+  //Entering details into the PCB (per-process file table)
+  //and system-wide open file table
+
   [READY_LIST + 32 * PID + i] = sysFileTable;
   [READY_LIST + 32 * PID + (i+1)] = 0; //Setting the LSEEK position
   [sysFileTable] = FATentry;
@@ -69,7 +84,10 @@ endif;
 
 if (sysCallNo == 3) then
   alias fileDescriptor S2;
-  fileDescriptor = [physicalSP - 3];
+  fileDescriptor = [physicalSP - 3]; //Getting the argument from stack
+
+  //Checking if fileDescriptor is valid.. It has a value between 0-7
+
   alias i S3;
   i = 0;
   while (i < 8) do
@@ -83,15 +101,21 @@ if (sysCallNo == 3) then
     [physicalSP - 2] = -1;
     ireturn;
   endif;
+
+  //Checking if the file is open in the System-Wide Open File table
+
   alias PID S3;
-  PID = (PTBR - 1024)/8;
-  alias sysFileTable S4;
-  sysFileTable = [READY_LIST + 32 * PID + (2 * fileDescriptor) + 15];
+  PID = (PTBR - 1024)/8; //Getting the PID of the process
+  alias sysFileTable S4; 
+  sysFileTable = [READY_LIST + 32 * PID + (2 * fileDescriptor) + 15]; //From PCB
   if (sysFileTable == -1) then
     print ("Failure");
     [physicalSP - 2] = -1;
     ireturn;
   endif;
+
+  //Decrementing count in System-Wide Open File table
+
   [sysFileTable + 1] = [sysFileTable + 1] - 1;
   if ([sysFileTable + 1] == 0) then
     [sysFileTable] = -1;
