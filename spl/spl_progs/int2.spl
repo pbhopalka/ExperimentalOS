@@ -1,0 +1,72 @@
+alias physicalSP S0;
+physicalSP = ([PTBR + 2 * (SP/512)] * 512) + (SP % 512);
+
+//Getting System Call number from the stack
+
+alias sysCallNo S1;
+sysCallNo = [physicalSP - 1];
+
+//Conditions
+
+//...........................Implementation of Open.........................
+
+if (sysCallNo == 2) then
+  alias filename S2;
+  filename = [physicalSP - 3];
+  alias FATentry S3;
+  FATentry = FAT + 0;
+  while (FATentry < FAT + 512) do
+    if ([FATentry] == filename) then
+      break;
+    endif;
+    FATentry = FATentry + 8;
+  endwhile;
+  if (FATentry == FAT + 512) then
+    print("File doesn't exist");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+  alias sysFileTable S4;
+  sysFileTable = FILE_TABLE + 0;
+  while (sysFileTable < FILE_TABLE + 128) do
+    if ([sysFileTable] == FATentry) then
+      print("File is already open\n");
+      break;
+    endif;
+    if ([sysFileTable] == -1) then
+      break;
+    endif;
+    sysFileTable = sysFileTable + 2;
+  endwhile;
+  if (sysFileTable == FILE_TABLE + 128) then
+    print("No space in System File Table");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+  alias PID S5;
+  PID = (PTBR - 1024)/8;
+  alias i S6;
+  i = 15;
+  while (i < 30) do
+    if ([READY_LIST + 32 * PID + i] == -1) then
+      break;
+    endif;
+    i = i + 1;
+  endwhile;
+  if (i == 30) then
+    print("Per-process file table is full");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+  [READY_LIST + 32 * PID + i] = sysFileTable;
+  [READY_LIST + 32 * PID + (i+1)] = 0; //Setting the LSEEK position
+  [sysFileTable] = FATentry;
+  [sysFileTable + 1] = [sysFileTable + 1] + 1;
+  [physicalSP - 2] = sysFileTable;
+endif;
+
+//...........................Implementation of Close.........................
+
+
+
+ireturn;

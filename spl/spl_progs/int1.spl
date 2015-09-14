@@ -1,7 +1,7 @@
 alias physicalSP S0;
 physicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
 
-//Getting system call number and arguments from stack
+//Getting system call number from stack
 
 alias sysCallNo S1;
 sysCallNo = [physicalSP - 1];
