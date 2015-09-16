@@ -43,8 +43,10 @@ if (sysCallNo == 5) then
   endif;
 
   //Find the basic block from the FAT table and load to scratchpad
+  
   alias FATindex S5;
-  FATindex = [[processFileTable]];
+  FATindex = [[processFileTable]]; //there are 2 brackets. Intentional.
+                                   //See figure at beginning of Stage 8
   alias basicBlock S6;
   basicBlock = [FATindex + 2];
   load (1, basicBlock);
