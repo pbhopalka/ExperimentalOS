@@ -1,5 +1,6 @@
 #include <string.h>
 #include <libgen.h>
+#include <stdlib.h>
 
 /* For command completion. */
 #include <readline/readline.h>
@@ -302,6 +303,7 @@ void runCommand(char command[])
 		printf(" df \n\t Display free list and free space\n");
 		printf(" cat <xfs_filename> \n\t to display contents of a file\n");
 		printf(" copy <start_blocks> <end_block> <unix_filename>\n\t Copies contents of specified range of blocks to a UNIX file.\n");
+		printf(" clear \n\t Clear the entire terminal screen\n");
 		printf(" exit \n\t Exit the interface\n");
 	}
 
@@ -515,6 +517,12 @@ void runCommand(char command[])
 			fileName[50] = '\0';
 			copyBlocksToFile (startBlock,endBlock,fileName);
 		}
+	}
+	else if (strcmp(name,"clear")==0)
+	{
+		system("clear");
+		printf("Unix-XFS Interace Version 1.0. \nType \"help\" for  getting a list of commands.\n");
+
 	}
 	else
 		printf("Unknown command \"%s\". See \"help\" for more information\n",name);
