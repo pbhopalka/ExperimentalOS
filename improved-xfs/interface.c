@@ -1,8 +1,17 @@
+/*
+ * This improved version of xfs-interface has been built on the version of xfs
+ * made by Kurian Jacobs. Major features added from the original version:
+ * -> Command completion on pressing Tab
+ * -> Remebering History when typing a command and saving it to a file called
+ * 		".history_file"
+ * .........................Piyush Bhopalka..................................
+ */
+
 #include <string.h>
 #include <libgen.h>
 #include <stdlib.h>
 
-/* For command completion. */
+/* For command completion and remembering history */
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "interface.h"
@@ -47,7 +56,7 @@ void
 cli_run_with_completion ()
 {
 	char *line_read = NULL, *command;
-
+	read_history(".history_file");
 	while (1)
 	{
 		/* Return the memory to the pool if needed. */
@@ -72,6 +81,8 @@ cli_run_with_completion ()
 
 		if (!strcmp(command, "exit"))
 			break;
+
+		write_history(".history_file"); //Writing commands to history file
 
 		runCommand(command);
 	}
@@ -150,9 +161,10 @@ xfs_cli_command_gen (const char *text, int state)
 char*
 xfs_cli_opt_gen(const char *text, int state)
 {
-	const char *options[12] = {"--exec", "--int=", "--exhandler", "--os", "--data"};
+	//add completion for --init
+	const char *options[12] = {"--exec", "--int=", "--init", "--os", "--data", "--exhandler"};
 	static int index, len;
-	const int opt_len = 5;
+	const int opt_len = 6;
 
 	if (state == 0)
 	{
@@ -541,7 +553,7 @@ int main(int argc, char **argv){
 		loadFileToVirtualDisk();
 	}
 	close(fd);
-
-	cli(argc, argv);					//Loads the Command Line Interface
+	stifle_history(50);
+	cli(argc, argv); //Loads the Command Line Interface
 	return 0;
 }
