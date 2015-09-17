@@ -1,7 +1,7 @@
 xfs-interface
 =============
 
-Interface for accessing XFS filesystem through UNIX. 
+Interface for accessing XFS filesystem through UNIX.
 
-Improved version by Kurian Jacobs which includes
-TAB autocomplete and history features
+Improved version by Piyush Bhopalka based on Kurian Jacobs' xfs-interface
+which includes TAB autocomplete and history remembering features
