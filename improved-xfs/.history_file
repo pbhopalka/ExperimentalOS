@@ -26,3 +26,14 @@ ls
 load --init ../apl/apl_progs/createFile.xsm
 load --init ../apl/apl_progs/openFile.xsm
 ls
+load --init ../apl/apl_progs/createFile.xsm
+load --init ../apl/apl_progs/readFile.xsm
+copy 19 19 ../FatTable.dat
+copy 24 24 ../basicBlock1.dat
+copy 25 25 ../basicBlock2.dat
+copy 27 27 ../dataBlock2.dat
+copy 27 27 ../dataBlock2.dat
+copy 26 26 ../dataBlock1.dat
+clear
+load --exhandler $HOME/myxos/spl/spl_progs/exhandler.xsm
+load --os $HOME/myxos/spl/spl_progs/os_startup.xsm
