@@ -71,7 +71,7 @@ endif;
 if (sysCallNo == 7) then
   alias fileDescriptor S2;
   alias wordToRead S3;
-  wordToRead = [physicalSP - 3]; //Getting arguments from stack
+  wordToRead = physicalSP - 3; //Getting arguments from stack
   fileDescriptor = [physicalSP - 4];
 
   //Checking if fileDescriptor is valid
@@ -127,8 +127,8 @@ if (sysCallNo == 7) then
 
   load (1, dataBlock);
   alias offset S9;
-  offset = (processFileTable + 1) % 512;
-  wordToRead = [SCRATCHPAD + offset];
+  offset = [processFileTable + 1] % 512;
+//  [wordToRead] = [SCRATCHPAD + offset];
   [physicalSP - 3] = [SCRATCHPAD + offset];
   [processFileTable + 1] = [processFileTable + 1] + 1;
   [physicalSP - 2] = 0;

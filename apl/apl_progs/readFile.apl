@@ -5,9 +5,13 @@ enddecl
 integer main()
 {
 	string b;
-	// Word read will be in b
-	// Assume fileDescriptor=0
-	a = Write(0, a);
+  string p;
+  p = "hello world";
+  a = Open("myfile.dat");
+  if (a != -1) then
+    print("File opened");
+  endif;
+	a = Write(0, p);
   if (a == 0) then
     print("Write Success");
   endif;
@@ -15,9 +19,10 @@ integer main()
   if (a == 0) then
     print("Seek Success");
   endif;
+  a = Seek (0, 0);
   a = Read(0,b);
   if (a == 0) then
-    print("Read Success");
+    print(b);
   endif;
 	return 0;
 }
