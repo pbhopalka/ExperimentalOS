@@ -18,3 +18,11 @@ load --init ../apl/apl_progs/createFile.xsm
 ls
 ls
 load --init ../apl/apl_progs/readFile.xsm
+load --init ../apl/apl_progs/createFile.xsm
+ls
+ls
+load --init ../apl/apl_progs/openFile.xsm
+ls
+load --init ../apl/apl_progs/createFile.xsm
+load --init ../apl/apl_progs/openFile.xsm
+ls
