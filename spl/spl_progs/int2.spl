@@ -77,7 +77,7 @@ if (sysCallNo == 2) then
   [READY_LIST + 32 * PID + (i+1)] = 0; //Setting the LSEEK position
   [sysFileTable] = FATentry;
   [sysFileTable + 1] = [sysFileTable + 1] + 1;
-  [physicalSP - 2] = sysFileTable;
+  [physicalSP - 2] = (i - 15)/2; //sysFileTable;
 endif;
 
 //...........................Implementation of Close.........................
@@ -106,7 +106,7 @@ if (sysCallNo == 3) then
 
   alias PID S3;
   PID = (PTBR - 1024)/8; //Getting the PID of the process
-  alias sysFileTable S4; 
+  alias sysFileTable S4;
   sysFileTable = [READY_LIST + 32 * PID + (2 * fileDescriptor) + 15]; //From PCB
   if (sysFileTable == -1) then
     print ("Failure");
