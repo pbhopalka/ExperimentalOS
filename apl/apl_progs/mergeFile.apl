@@ -4,22 +4,25 @@ enddecl
 
 integer main()
 {
-  a = Open ("odd.dat");
-  a = Open ("even.dat");
+  integer fd1;
+  integer fd2;
+  integer fd3;
+  fd1 = Open ("odd.dat");
+  fd2 = Open ("even.dat");
   a = Create ("mergeFile.dat");
-  a = Open ("mergeFile.dat");
+  fd3 = Open ("mergeFile.dat");
   integer i;
   integer b;
   i = 0;
   while (i < 20) do
-    a = Read (0, b);
-    a = Write (2, b);
-    a = Read (1, b);
-    a = Write(2, b);
+    a = Read (fd1, b);
+    a = Write (fd3, b);
+    a = Read (fd2, b);
+    a = Write(fd3, b);
     i = i + 1;
   endwhile;
-  a = Close (0);
-  a = Close (1);
-  a = Close (2);
+  a = Close (fd1);
+  a = Close (fd2);
+  a = Close (fd3);
   return 0;
 }

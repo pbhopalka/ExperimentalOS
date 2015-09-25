@@ -1,3 +1,7 @@
+//Lseek has been modified
+//Now newLseek takes seekPos += newLseek
+//If newLseek == 0 then seekPos = 0
+
 alias physicalSP S0;
 physicalSP = ([PTBR + 2 * (SP/512)] * 512) + (SP % 512);
 
@@ -16,7 +20,7 @@ if (sysCallNo == 6) then
 
   //Checking if fileDescriptor is valid
 
-  if (fileDescriptor >= 8) then
+  if (fileDescriptor >= 8 || fileDescriptor < 0) then
     print ("Invalid File");
     [physicalSP - 2] = -1;
     ireturn;
@@ -46,7 +50,11 @@ if (sysCallNo == 6) then
 
   //Making the change
 
-  [processFileTable + 1] = newLseek;
+  if (newLseek == 0) then
+    [processFileTable + 1] = newLseek;
+  else
+    [processFileTable + 1] = [processFileTable + 1] + newLseek;
+  endif;
   [physicalSP - 2] = 0;
 endif;
 
@@ -60,7 +68,7 @@ if (sysCallNo == 7) then
 
   //Checking if fileDescriptor is valid
 
-  if (fileDescriptor >= 8) then
+  if (fileDescriptor >= 8 || fileDescriptor < 0) then
     print ("Invalid FileDescriptor");
     [physicalSP - 2] = -1;
     ireturn;

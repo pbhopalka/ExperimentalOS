@@ -16,7 +16,7 @@ if (sysCallNo == 5) then
 
   //Checking if fileDescriptor is valid
 
-  if (fileDescriptor >= 8) then
+  if (fileDescriptor >= 8 || fileDescriptor < 0) then
     print ("Invalid File");
     [physicalSP - 2] = -1;
     ireturn;
@@ -52,6 +52,7 @@ if (sysCallNo == 5) then
   if (dataBlock == -1) then
     alias i S9;
     i = 24;
+                                  //Check if df is empty
     while (i < 448) do
       if ([DISK_LIST + i] == 0) then
         [DISK_LIST + i] = 1;
