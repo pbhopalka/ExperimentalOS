@@ -16,15 +16,7 @@ if (sysCallNo == 6) then
 
   //Checking if fileDescriptor is valid
 
-  alias i S4;
-  i = 0;
-  while (i < 8) do
-    if (i == fileDescriptor) then
-      break;
-    endif;
-    i = i + 1;
-  endwhile;
-  if (i == 8) then
+  if (fileDescriptor >= 8) then
     print ("Invalid File");
     [physicalSP - 2] = -1;
     ireturn;
@@ -46,15 +38,7 @@ if (sysCallNo == 6) then
 
   alias FATindex S5;
   FATindex = [[processFileTable]];
-  alias i S6;
-  i = 0;
-  while (i < [FATindex + 1]) do
-    if (newLseek == i) then
-      break;
-    endif;
-    i = i + 1;
-  endwhile;
-  if (i == FATindex + 1) then
+  if (newLseek >= FATindex + 1) then
     print("Invalid seek location");
     [physicalSP - 2] = -1;
     ireturn;
@@ -76,21 +60,11 @@ if (sysCallNo == 7) then
 
   //Checking if fileDescriptor is valid
 
-  alias i S4;
-  i = 0;
-  while (i < 8) do
-    if (i == fileDescriptor) then
-      break;
-    endif;
-    i = i + 1;
-  endwhile;
-  if (i == 8) then
+  if (fileDescriptor >= 8) then
     print ("Invalid FileDescriptor");
     [physicalSP - 2] = -1;
     ireturn;
   endif;
-
-  //Check if file is already open and the information is in per-process table
 
   //Check if file is already open and the information is in per-process table
 
@@ -113,6 +87,7 @@ if (sysCallNo == 7) then
   alias basicBlock S6;
   basicBlock = [FATindex + 2];
   load (1, basicBlock);
+                                  //Checking validity of Lseek position
   if ([processFileTable + 1] == [FATindex + 1]) then
     print("EOF");
     [physicalSP - 2] = -1;

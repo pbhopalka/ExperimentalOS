@@ -16,15 +16,7 @@ if (sysCallNo == 5) then
 
   //Checking if fileDescriptor is valid
 
-  alias i S4;
-  i = 0;
-  while (i < 8) do
-    if (i == fileDescriptor) then
-      break;
-    endif;
-    i = i + 1;
-  endwhile;
-  if (i == 8) then
+  if (fileDescriptor >= 8) then
     print ("Invalid File");
     [physicalSP - 2] = -1;
     ireturn;
@@ -43,7 +35,7 @@ if (sysCallNo == 5) then
   endif;
 
   //Find the basic block from the FAT table and load to scratchpad
-  
+
   alias FATindex S5;
   FATindex = [[processFileTable]]; //there are 2 brackets. Intentional.
                                    //See figure at beginning of Stage 8

@@ -134,13 +134,13 @@ if (sysCallNo == 4) then
 			load (1, dataBlock);
 			counter = 0;
 			while (counter < 512) do
-				[SCRATCHPAD + counter] = "";
+				[SCRATCHPAD + counter] = ""; //update data block
 				counter = counter + 1;
 			endwhile;
 			store(1, dataBlock);
 			load (1, basicBlock);
 			[DISK_LIST + dataBlock] = 0; //update df
-			dataBlock = "";
+			[SCRATCHPAD + i] = ""; //update basic block
 		endif;
 		i = i + 1;
 	endwhile;
