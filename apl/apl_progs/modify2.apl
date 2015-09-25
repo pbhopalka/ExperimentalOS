@@ -1,4 +1,4 @@
-//Program to 
+//Program to
 
 integer main()
 {
@@ -17,7 +17,7 @@ integer main()
     n = n + 1;
   endwhile;
   status = Seek(fd1, -2);
-  while (n >= 0) do
+  while (n > 0) do
     n = n - 1;
     status = Read (fd1, a);
     print (a);
