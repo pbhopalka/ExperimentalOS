@@ -1,4 +1,4 @@
-myfile.dat
+odd.dat
 512
 24
 
@@ -6,17 +6,17 @@ myfile.dat
 
 
 
-anotherfile.d
+even.dat
 512
-25
+26
 
 
 
 
 
--1
-0
--1
+mergeFile.dat
+512
+28
 
 
 
