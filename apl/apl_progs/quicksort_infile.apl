@@ -44,7 +44,9 @@ integer main()
   string b;
   integer c;
   status = 0;
-  fd = Open("sorting.dat");
+  string l;
+  read (l);
+  fd = Open(l);
   while (status == 0) do
     status = Read (fd, b);
     if (b == "") then
