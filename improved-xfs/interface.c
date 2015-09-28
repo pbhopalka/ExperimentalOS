@@ -97,7 +97,7 @@ xfs_cli_completion(const char *text, int start, int end)
 	char *curr_context;
 	char *pch;
 
-	curr_context = malloc(start + 1);
+	curr_context = malloc(start + 10);
 	strncpy (curr_context, rl_line_buffer, start);
 
 	/* strncpy is touchy, we have to take care of our frontiers. */

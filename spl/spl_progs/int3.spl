@@ -53,7 +53,7 @@ if (sysCallNo == 6) then
   if (newLseek == 0) then
     [processFileTable + 1] = newLseek;
   else
-    [processFileTable + 1] = [processFileTable + 1] + newLseek;
+    [processFileTable + 1] = newLseek;
   endif;
   [physicalSP - 2] = 0;
 endif;

@@ -1,13 +1,14 @@
 integer main(){
-	print(1);
-	print(3);
-	print(5);
-	print(7);
-	print(9);
-	print(11);
-	print(13);
-	print(15);
-	print(17);
-	print(19);
+	integer status, fd;
+	status = Create ("sorting.dat");
+	fd = Open("sorting.dat");
+	status = Write (fd, 3);
+	status = Write (fd, 2);
+	status = Write (fd, 8);
+	status = Write (fd, 5);
+	status = Write (fd, 9);
+	status = Write (fd, 1);
+	status = Write (fd, 4);
+	status = Close(fd);
 	return 0;
 }

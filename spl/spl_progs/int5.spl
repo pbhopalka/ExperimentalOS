@@ -1,0 +1,67 @@
+alias physicalSP S0;
+physicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
+
+//Getting system call number from stack
+
+alias sysCallNo S1;
+sysCallNo = [physicalSP - 1];
+
+
+//Conditions
+
+//.............................Implementation of Fork....................
+
+if (sysCallNo == 8) then
+
+  //Finding a free PCB
+
+  alias i S0;
+  i = 0;
+  while (i <= 8) do
+    if ([READY_LIST + (i * 32) + 1] == 0) then
+      break;
+    endif;
+    i = i + 1;
+  endwhile;
+  if (i > 8) then
+    print ("No free PCB");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+
+  //Setting PID for the process
+
+  [READY_LIST + (i * 32)] = i;
+
+  //Checking to see if memory list is empty enough to duplicate process
+
+  alias counter S1;
+  alias sum S2;
+  counter = 0;
+  sum = 0;
+  while (counter < 256) do
+    if ([PAGE_TABLE + counter] != -1) then
+      sum = sum + 1;
+    endif;
+    counter = counter + 1;
+  endwhile;
+  counter = 0;
+  alias sum2 S3;
+  sum2 = 0;
+  while (counter < 64) do
+    if ([MEM_LIST + counter] == 0) then
+      sum2 = sum2 + 1;
+    endif;
+    counter = counter + 1;
+  endwhile;
+  if (sum2 < sum) then
+    print ("Memory not enough");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+
+  
+
+endif;
+
+ireturn;
