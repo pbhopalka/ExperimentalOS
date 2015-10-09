@@ -1,0 +1,34 @@
+alias physicalSP S0;
+physicalSP = ([PTBR + 2 * (SP / 512)]*512) + (SP % 512);
+
+//Getting the system call from the stack
+
+alias sysCallNo S1;
+sysCallNo = [physicalSP - 1] 
+
+//.........................Implementation of Exit........................
+
+if (sysCallNo == 10) then
+	
+	//Checking if any process is in ready state
+	alias i S2;
+	while (i < 32) do
+		if ([READY_LIST + (32 * i) + 1] == 1) then
+			break;
+		endif;
+		i = i + 1;
+	endwhile;
+	if (i == 32) then
+		halt;
+		ireturn;
+	endif;
+	
+	
+	PID = (PTBR - 1024)/8;
+		
+
+
+
+endif;
+
+ireturn;

@@ -115,15 +115,11 @@ print ("Registers set up");
     [READY_LIST + (32 * childPID) + counter] = [READY_LIST + (32 * parentPID) + counter];
     [READY_LIST + (32 * childPID) + counter + 1] = [READY_LIST + (32 * parentPID) + counter + 1];
     PCB = [READY_LIST + (32 * childPID) + counter];
-    print ("PCB");
-    print (PCB);
     if (PCB != -1) then
-		[PCB + 1] = [PCB + 1] + 1;
-    //[[PCB] + 1] = [[PCB] + 1] + 1; //incrementing count in system-wide open file table
+		[PCB + 1] = [PCB + 1] + 1;//incrementing count in system-wide open file table
+	endif;
     counter = counter + 2;
   endwhile;
-
-print ("File work done");
 
   //Setting state of child process as ready
 
