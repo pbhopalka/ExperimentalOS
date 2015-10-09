@@ -96,8 +96,8 @@ load (20, 14);
 
 //.....................Interrupt 6 Routine
 
-load (21, 15);
-load (22, 16);
+//load (21, 15);
+//load (22, 16);
 
 //..................Interrupt 7 Routine
 

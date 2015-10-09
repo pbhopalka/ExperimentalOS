@@ -1,8 +1,3 @@
-load --int=4 ../spl/spl_progs/int4.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=timer ../spl/spl_progs/timer.xsm
-load --exhandler ../spl/spl_progs/exhandler.xsm
-load --os ../spl/spl_progs/os_startup.xsm
 load --init ../apl/apl_progs/createFile.xsm
 load --init ../apl/apl_progs/openFile.xsm
 ls
@@ -48,3 +43,8 @@ load --init ../apl/apl_progs/deleteFile.xsm
 ls
 load --init ../apl/apl_progs/deleteFile.xsm
 load --init ../apl/apl_progs/deleteFile.xsm
+load --init ../apl/apl_progs/test.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+exi
+load --os ../spl/spl_progs/os_startup.xsm
+load --init ../apl/apl_progs/fork_test.xsm
