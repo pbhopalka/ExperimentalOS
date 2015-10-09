@@ -1,7 +1,4 @@
 load --init ../apl/apl_progs/createFile.xsm
-load --init ../apl/apl_progs/openFile.xsm
-ls
-load --init ../apl/apl_progs/createFile.xsm
 ls
 ls
 load --init ../apl/apl_progs/readFile.xsm
@@ -48,3 +45,6 @@ load --int=5 ../spl/spl_progs/int5.xsm
 exi
 load --os ../spl/spl_progs/os_startup.xsm
 load --init ../apl/apl_progs/fork_test.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm

@@ -14,6 +14,9 @@ if (sysCallNo == 8) then
 
   alias parentPID S2;
   parentPID = (PTBR-1024)/8;
+  
+print ("ParentPID");
+print (parentPID);
 
   // Checking if any PCB entry is empty
 
@@ -33,11 +36,15 @@ if (sysCallNo == 8) then
     ireturn;
   endif;
 
+
+
   //Setting the PID of the new process
   alias childPID S8;
   childPID = counter;
   [READY_LIST + (32 * childPID)] = childPID;
 
+print ("ChildPID");
+print (childPID);
   //Duplicating the process
 
   alias parentPerProcess S5;
@@ -78,6 +85,8 @@ if (sysCallNo == 8) then
     counter = counter + 1;
   endwhile;
 
+print ("Memlist set up");
+
   //Setting up PTBR, IP and SP of child per-process
 
   [READY_LIST + (32 * childPID) + 5] = childPerProcess;
@@ -96,6 +105,8 @@ if (sysCallNo == 8) then
   [READY_LIST + (32 * childPID) + 12] = R5;
   [READY_LIST + (32 * childPID) + 13] = R6;
   [READY_LIST + (32 * childPID) + 14] = R7;
+  
+print ("Registers set up");
 
   //Copying the Per-process file entries from parent
 
@@ -104,9 +115,15 @@ if (sysCallNo == 8) then
     [READY_LIST + (32 * childPID) + counter] = [READY_LIST + (32 * parentPID) + counter];
     [READY_LIST + (32 * childPID) + counter + 1] = [READY_LIST + (32 * parentPID) + counter + 1];
     PCB = [READY_LIST + (32 * childPID) + counter];
-    [[PCB] + 1] = [[PCB] + 1] + 1; //incrementing count in system-wide open file table
+    print ("PCB");
+    print (PCB);
+    if (PCB != -1) then
+		[PCB + 1] = [PCB + 1] + 1;
+    //[[PCB] + 1] = [[PCB] + 1] + 1; //incrementing count in system-wide open file table
     counter = counter + 2;
   endwhile;
+
+print ("File work done");
 
   //Setting state of child process as ready
 
