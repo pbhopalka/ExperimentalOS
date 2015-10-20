@@ -4,14 +4,15 @@ physicalSP = ([PTBR + 2 * (SP / 512)]*512) + (SP % 512);
 //Getting the system call from the stack
 
 alias sysCallNo S1;
-sysCallNo = [physicalSP - 1] 
+sysCallNo = [physicalSP - 1];
 
 //.........................Implementation of Exit........................
 
 if (sysCallNo == 10) then
-	
+
 	//Checking if any process is in ready state
 	alias i S2;
+	i = 0;
 	while (i < 32) do
 		if ([READY_LIST + (32 * i) + 1] == 1) then
 			break;
@@ -19,15 +20,75 @@ if (sysCallNo == 10) then
 		i = i + 1;
 	endwhile;
 	if (i == 32) then
+		print("No other");
 		halt;
 		ireturn;
 	endif;
-	
-	
+
+	//Checking the running process
+
+	alias PID S5;
 	PID = (PTBR - 1024)/8;
-		
+	while (([READY_LIST + (32 * PID) + 1]) != 2) do
+		PID = (PID + 1) % 32;
 
+	endwhile;
+	i = 15;
+	alias perProcessTable S3;
+	while (i < 31) do
+		perProcessTable = [READY_LIST + (32 * PID) + i];
+		if (perProcessTable != -1) then
+			[perProcessTable + 1] = [perProcessTable + 1] - 1;
+		endif;
+		i = i + 1;
+	endwhile;
+//	print("All file instances closed");
 
+	//Setting the STATE as 0
+
+	[READY_LIST + (32 * PID) + 1] = 0;
+
+	//Freeing up space in the MEM_LIST
+
+	alias pageEntry S3;
+	i = 0;
+	while (i < 4) do
+		pageEntry = [PAGE_TABLE + (8*PID) + (2*i)];
+		[MEM_LIST + pageEntry] = 0;
+		[PAGE_TABLE + (8*PID) + (2*i)] = -1;
+		[PAGE_TABLE + (8*PID) + (2*i) + 1] = 00;
+		i = i + 1;
+	endwhile;
+
+	//print("Page table done");
+
+	while (([READY_LIST + (32 * PID) + 1]) != 1) do
+		PID = (PID + 1)%32;
+	endwhile;
+
+	//Setting up the values of the new register
+
+	alias newPCB S3;
+	newPCB = READY_LIST + 32 * PID;
+	BP = [newPCB + 2];
+	SP = [newPCB + 3];
+	PTBR = [newPCB + 5];
+	PTLR = [newPCB + 6];
+	R0 = [newPCB + 7];
+	R1 = [newPCB + 8];
+	R2 = [newPCB + 9];
+	R3 = [newPCB + 10];
+	R4 = [newPCB + 11];
+	R5 = [newPCB + 12];
+	R6 = [newPCB + 13];
+	R7 = [newPCB + 14];
+	SP = SP + 1;
+
+	alias ReturnAdd S7;
+	ReturnAdd = ([PTBR + 2 * (SP / 512)]*512) + (SP % 512);
+	[ReturnAdd] = [newPCB + 4];
+	[newPCB + 1] = 2;
+	[physicalSP - 2] = 0;
 
 endif;
 

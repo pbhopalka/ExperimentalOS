@@ -91,7 +91,7 @@ SUB T0, 1024
 DIV T0, 8
 MOV S5, T0
 MOV S6, 15
-MOV T0, 30
+MOV T0, 31
 GT T0,  S6
 JZ T0, 06878
 MOV T0, 1536
@@ -109,7 +109,7 @@ MOV T0, S6
 ADD T0, 1
 MOV S6, T0
 JMP 6842
-MOV T0, 30
+MOV T0, 31
 EQ T0, S6
 JZ T0, 06898
 MOV T0,  "Per-process file table is full"

@@ -121,7 +121,7 @@ endwhile;
 //....................Setting up the memory free list
 
 counter = 0;
-while (counter < 28) do
+while (counter <= 28) do
   [MEM_LIST + counter] = 1;
   counter = counter + 1;
 endwhile;

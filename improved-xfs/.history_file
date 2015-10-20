@@ -1,50 +1,50 @@
-load --init ../apl/apl_progs/readFile.xsm
-load --init ../apl/apl_progs/createFile.xsm
-ls
-ls
-load --init ../apl/apl_progs/openFile.xsm
-ls
-load --init ../apl/apl_progs/createFile.xsm
-load --init ../apl/apl_progs/openFile.xsm
-ls
-load --init ../apl/apl_progs/createFile.xsm
-load --init ../apl/apl_progs/readFile.xsm
-copy 19 19 ../FatTable.dat
-copy 24 24 ../basicBlock1.dat
-copy 25 25 ../basicBlock2.dat
-copy 27 27 ../dataBlock2.dat
-copy 27 27 ../dataBlock2.dat
-copy 26 26 ../dataBlock1.dat
-clear
-load --exhandler $HOME/myxos/spl/spl_progs/exhandler.xsm
-load --os $HOME/myxos/spl/spl_progs/os_startup.xsm
-load --int=2 ../spl/spl_progs/int2.xsm
-load --init ../apl/apl_progs/openFile.xsm
-load --os ../spl/spl_progs/os_startup.spl
-load --os ../spl/spl_progs/os_startup.xsm
-load --init ../apl/apl_progs/openFile.xsm
-ls
-load --init ../apl/apl_progs/createFile.xsm
-load --init ../apl/apl_progs/openFile.xsm
-ls
-load --init ../apl/apl_progs/createFile.xsm
-ls
-load --init ../apl/apl_progs/readFile.xsm
-ls
-load --init ../apl/apl_progs/deleteFile.xsm
-ls
-load --init ../apl/apl_progs/deleteFile.xsm
-ls
-load --init ../apl/apl_progs/deleteFile.xsm
-load --init ../apl/apl_progs/deleteFile.xsm
-load --init ../apl/apl_progs/test.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --init ../apl/apl_progs/fork_test.xsm
+load --init ../apl/apl_progs/fork_test.xsm
+load --int=5 ..
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=timer ../spl/spl_progs/timer.xsm
 load --int=5 ../spl/spl_progs/int5.xsm
-exi
-load --os ../spl/spl_progs/os_startup.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
 load --init ../apl/apl_progs/fork_test.xsm
 load --int=5 ../spl/spl_progs/int5.xsm
 load --int=5 ../spl/spl_progs/int5.xsm
 load --int=5 ../spl/spl_progs/int5.xsm
 load --int=5 ../spl/spl_progs/int5.xsm
-ls
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=7 ..
+load --init ../apl/apl_progs/fork_test.xsm
+load --int=5 ..
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --init ../apl/apl_progs/fork_test.xsm
+load --init ../apl/apl_progs/fork_test.xsm
+load --int=5 ..
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=timer ../spl/spl_progs/timer.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --os ../spl/spl_progs/os_startup.xsm
+load --int=5 ..
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --init ../apl/apl_progs/fork_test.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --init ../apl/apl_progs/fork_test.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --init ../apl/apl_progs/fork_test.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
 load --init ../apl/apl_progs/fork_test.xsm

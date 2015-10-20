@@ -21,6 +21,7 @@ POP R2
 MOV [R0], R1
 MOV R0, "Before fork"
 OUT R0
+BRKP
 MOV R0, 1
 MOV R1, BP
 ADD R0, R1
@@ -31,7 +32,21 @@ INT 5
 POP R2
 POP R1
 MOV [R0], R1
+MOV R0, "1"
+OUT R0
+MOV R0, "2"
+OUT R0
+MOV R0, "3"
+OUT R0
 MOV R0, "After fork"
+OUT R0
+MOV R0, "First exit"
+OUT R0
+MOV R0, 10
+PUSH R0
+INT 7
+POP R0
+MOV R0, "Second exit"
 OUT R0
 MOV R0, 10
 PUSH R0

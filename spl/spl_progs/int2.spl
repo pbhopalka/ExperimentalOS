@@ -58,13 +58,13 @@ if (sysCallNo == 2) then
   PID = (PTBR - 1024)/8;
   alias i S6;
   i = 15;
-  while (i < 30) do
+  while (i < 31) do
     if ([READY_LIST + 32 * PID + i] == -1) then
       break;
     endif;
     i = i + 1;
   endwhile;
-  if (i == 30) then
+  if (i == 31) then
     print("Per-process file table is full");
     [physicalSP - 2] = -1;
     ireturn;
