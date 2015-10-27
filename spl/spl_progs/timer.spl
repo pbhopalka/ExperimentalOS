@@ -2,7 +2,7 @@
 
 //......................Setting values of running process to PCB
 
-print ("Timer");
+//print ("Timer");
 alias currentPID S0;
 currentPID = (PTBR - 1024) / 8;
 alias currentPCB S1;
@@ -54,9 +54,9 @@ newphysicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
 [newphysicalSP] = [newPCB + 4]; //Stores IP field value of PCB
 [newPCB + 1] = 2; // Change state to running
 
-print ("Going from");
-print (currentPID);
-print ("to");
-print (newPID);
+//print ("Going from");
+//print (currentPID);
+//print ("to");
+//print (newPID);
 breakpoint;
 ireturn;
