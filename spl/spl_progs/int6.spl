@@ -161,6 +161,18 @@ breakpoint;
   [[currentPTBR + 6 + 0] * 512] = 0;
   //[physicalSP] = 0;
   [physicalSP - 2] = 0;
+  ireturn;
 
 endif;
+
+//.........................Implementation of Getpid...........................
+
+if (sysCallNo == 11) then
+  alias PID S2;
+  PID = (PTBR - 1024) / 8;
+  [physicalSP - 2] = PID;
+  ireturn;
+endif;
+
+[physicalSP - 2] = -1;
 ireturn;
