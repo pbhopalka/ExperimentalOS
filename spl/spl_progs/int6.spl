@@ -46,7 +46,7 @@ if (sysCallNo == 9) then
   codeBlocks = 0;
   while(i < 512) do
     if ([SCRATCHPAD + i] != "" && [SCRATCHPAD + i] != -1) then
-      print ([SCRATCHPAD + i]);
+      //print ([SCRATCHPAD + i]);
       codeBlocks = codeBlocks + 1;
     endif;
     i = i + 1;
@@ -57,8 +57,6 @@ if (sysCallNo == 9) then
     [physicalSP - 2] = -1;
     ireturn;
   endif;
-
-print ("Entering");
 
   i = 0;
   alias codePage S6;
@@ -79,15 +77,10 @@ print ("Entering");
     codePage = codePage - 1;
   endif;
 
-print ("codePage");
-  print (codePage);
-  print ("codeBlocks");
-  print (codeBlocks);
-
   if (codeBlocks <= codePage) then //allocating pages in Page table
     i = 0;
     while (i < codeBlocks) do
-      if ([SCRATCHPAD + i] == -1) then
+      if ([SCRATCHPAD + i] != -1) then //changing to not equals
         load ([currentPTBR + 2 * i + 0], [SCRATCHPAD + i]);
         [currentPTBR + 2 * i + 1] = "01";
         [MEM_LIST + [currentPTBR + 2 * i + 0]] = 1;
@@ -133,7 +126,6 @@ print ("codePage");
   endif;
 
   //Closing all open instances of a file
-  print ("Coming to files");
   alias PID S9;
   PID = (PTBR - 1024)/8; //Getting the PID of the process
   alias sysFileTable S10;
@@ -153,7 +145,7 @@ print ("codePage");
     endif;
   endwhile;
 
-print ("All files closed");
+
 breakpoint;
   SP = 3 * 512;
 

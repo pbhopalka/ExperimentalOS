@@ -1,11 +1,3 @@
-fdisk
-ls
-df
-clear
-load --init ../apl/apl_progs/exec_test.xsm
-load --os ../spl/spl_progs/os_startup.xsm
-loa
-load --int=6 ..
 load --int=1 ..
 load --int=2 ../spl/spl_progs/int2.xsm
 load --int=3 ../spl/spl_progs/int3.xsm
@@ -44,6 +36,14 @@ load --int=6 ../spl/spl_progs/int6.xsm
 load --int=6 ../spl/spl_progs/int6.xsm
 load --int=6 ../spl/spl_progs/int6.xsm
 load --int=6 ../spl/spl_progs/int6.xsm
+load --int=6 ../spl/spl_progs/int6.xsm
+load --int=6 ../spl/spl_progs/int6.xsm
+load --int=6 ../spl/spl_progs/int6.xsm
+load --int=6 ../spl/spl_progs/int6.xsm
+load --int=6 ../spl/spl_progs/int6.xsm
+load --int=6 ../spl/spl_progs/int6.xsm
+load --int=6 ../spl/spl_progs/int6.xsm
+copy 19 19 ../FatTable.dat
 load --int=6 ../spl/spl_progs/int6.xsm
 load --int=6 ../spl/spl_progs/int6.xsm
 load --int=6 ../spl/spl_progs/int6.xsm
