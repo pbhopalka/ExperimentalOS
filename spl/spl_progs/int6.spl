@@ -174,5 +174,14 @@ if (sysCallNo == 11) then
   ireturn;
 endif;
 
+//........................Implementation of Getppid............................
+
+if (sysCallNo == 12) then
+  alias PID S2;
+  PID = (PTBR - 1024) / 8;
+  [physicalSP - 2] = [READY_LIST + (2 * PID) + 31];
+  ireturn;
+endif;
+
 [physicalSP - 2] = -1;
 ireturn;

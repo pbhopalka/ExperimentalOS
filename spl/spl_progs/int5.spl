@@ -128,6 +128,10 @@ if (sysCallNo == 8) then
 
   [READY_LIST + (32 * childPID) + 1] = 1;
 
+  //Setting up ParentPID
+
+  [READY_LIST + (32 * childPID) + 31] = parentPID;
+  
   [physicalSP - 2] = childPID;
   alias childSP S10;
   childSP = ([childPerProcess + 2 * ((SP - 1) / 512)] * 512) + ((SP - 1) % 512);

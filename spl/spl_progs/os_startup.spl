@@ -51,6 +51,9 @@ SP = 3*512;
 [READY_LIST + 29] = -1;
 [READY_LIST + 30] = -1;
 
+//..................Setting up the Parent process for INIT
+
+[READY_LIST + 31] = 0;
 
 PTBR = PTBR_Process0;
 PTLR = 4;
