@@ -14,6 +14,8 @@ if (sysCallNo == 8) then
 
   alias parentPID S2;
   parentPID = (PTBR-1024)/8;
+  //print ("parentPID");
+  //print(parentPID);
 
   // Checking if any PCB entry is empty
 
@@ -68,16 +70,23 @@ if (sysCallNo == 8) then
     ireturn;
   endif;
 
+//print ("set memlist");
+
   //Setting the Memory list and copying all the info from parent to child
   counter = 29;
   page = 0;
   while (counter < 64) do
+
     if ([MEM_LIST + counter] == 0) then
+    //  [childPerProcess + 2*page] = counter;
       [childPerProcess + (2*page) + 1] = [parentPerProcess + (2*page) + 1];
       [MEM_LIST + counter] = 1;
+    //  print ([MEM_LIST+ counter]);
+    //  print ([childPerProcess + (2*page) + 0]);
+    //  print ([parentPerProcess + (2*page) + 0]);
       alias i S13;
       i = 0;
-      while (i < 512) do
+      while (i < 512) do //copying the contents
         [[childPerProcess + (2*page) + 0] * 512 + i] = [[parentPerProcess + (2*page) + 0] * 512 + i];
         i = i + 1;
       endwhile;
@@ -85,13 +94,14 @@ if (sysCallNo == 8) then
       if (page > 3) then
         break;
       endif;
-    else
-      [childPerProcess + 2*page] = -1;
-      [childPerProcess + 2*page + 1] = [parentPerProcess + 2*page + 1];
+  //  else
+  //    [childPerProcess + 2*page] = -1;
+  //    [childPerProcess + 2*page + 1] = [parentPerProcess + 2*page + 1];
     endif;
     counter = counter + 1;
   endwhile;
 
+//print ("setting up");
   //Setting up PTBR, IP and SP of child per-process
 
   [READY_LIST + (32 * childPID) + 5] = childPerProcess;
@@ -99,6 +109,8 @@ if (sysCallNo == 8) then
   [READY_LIST + (32 * childPID) + 3] = SP - 1;
 
   //Copying the registers
+
+//print ("copying reg");
 
   [READY_LIST + (32 * childPID) + 2] = BP;
   [READY_LIST + (32 * childPID) + 6] = PTLR;
@@ -112,6 +124,7 @@ if (sysCallNo == 8) then
   [READY_LIST + (32 * childPID) + 14] = R7;
 
   //Copying the Per-process file entries from parent
+//print ("entering per-process");
 
   counter = 15;
   while (counter < 31) do
@@ -124,6 +137,8 @@ if (sysCallNo == 8) then
     counter = counter + 2;
   endwhile;
 
+//  print ("Came here in fork");
+//  print (childPID);
   //Setting state of child process as ready
 
   [READY_LIST + (32 * childPID) + 1] = 1;

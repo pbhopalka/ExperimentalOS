@@ -13,7 +13,8 @@ breakpoint;
   print ("Parent");
   pid = Fork();
   print ("After fork 1");
-//  pid = Fork(); //Some error in forking twice simultaneously
+  breakpoint;
+  pid = Fork(); //Some error in forking twice simultaneously
   if (pid == -2) then
     print ("Child2");
     Exit();
