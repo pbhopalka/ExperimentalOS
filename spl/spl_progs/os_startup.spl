@@ -67,6 +67,10 @@ while (counter < 32) do
   counter = counter + 1;
 endwhile;
 
+//....................Making STATE of Init as 1
+
+ [READY_LIST + 1] = 2; 
+
 //....................Loading FAT and df to memory
 
 load (5, 19);

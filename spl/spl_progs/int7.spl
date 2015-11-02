@@ -9,7 +9,7 @@ sysCallNo = [physicalSP - 1];
 //.........................Implementation of Exit........................
 
 if (sysCallNo == 10) then
-
+	print ("Exiting");
 	//Checking if any process is in ready state
 	alias i S2;
 	i = 0;
@@ -28,6 +28,7 @@ if (sysCallNo == 10) then
 	//Checking the running process
 
 	alias PID S5;
+	print (i);
 	PID = (PTBR - 1024)/8;
 	while (([READY_LIST + (32 * PID) + 1]) != 2) do
 		PID = (PID + 1) % 32;

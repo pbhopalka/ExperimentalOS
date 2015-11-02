@@ -39,13 +39,28 @@ if (sysCallNo == 8) then
   alias childPID S8;
   childPID = counter;
   [READY_LIST + (32 * childPID)] = childPID;
-
+breakpoint;
   //Duplicating the process
 
   alias parentPerProcess S5;
   alias childPerProcess S6;
   parentPerProcess = PAGE_TABLE + (parentPID * 8);
   childPerProcess = PAGE_TABLE + (childPID * 8);
+print("ParentPID");
+print(parentPID);
+print("ChildPID");
+print(childPID);
+  //Counting number of valid pages
+
+  alias validPages S11;
+  validPages = 0;
+  counter = 0;
+  while (counter < 4) do
+    if ([parentPerProcess + 2*counter + 1] != "01" || [parentPerProcess + 2*counter + 1] != "11") then
+      validPages = validPages + 1;
+    endif;
+    counter = counter + 1;
+  endwhile;
 
   //Checking if memory list is free
 
@@ -56,7 +71,7 @@ if (sysCallNo == 8) then
     if ([MEM_LIST + counter] == 0) then
       [childPerProcess + 2*page] = counter; //Setting up different pages in Page Table for child process
       page = page + 1;
-      if (page > 3) then
+      if (page >= validPages) then
         break;
       endif;
     endif;
@@ -67,6 +82,8 @@ if (sysCallNo == 8) then
     [physicalSP - 2] = -1;
     ireturn;
   endif;
+breakpoint;
+print("setting mem");
 
   //Setting the Memory list and copying all the info from parent to child
   counter = 29;
@@ -77,6 +94,9 @@ if (sysCallNo == 8) then
       [MEM_LIST + counter] = 1;
       alias i S13;
       i = 0;
+print("Copying all the info");
+print([childPerProcess + (2*page) + 0]);
+print([parentPerProcess + (2*page) + 0]);
       while (i < 512) do
         [[childPerProcess + (2*page) + 0] * 512 + i] = [[parentPerProcess + (2*page) + 0] * 512 + i];
         i = i + 1;
@@ -85,15 +105,17 @@ if (sysCallNo == 8) then
       if (page > 3) then
         break;
       endif;
-    else
-      [childPerProcess + 2*page] = -1;
-      [childPerProcess + 2*page + 1] = [parentPerProcess + 2*page + 1];
+    //else
+//print("doing -1");
+  //    [childPerProcess + 2*page] = -1;
+    //  [childPerProcess + 2*page + 1] = [parentPerProcess + 2*page + 1];
     endif;
     counter = counter + 1;
   endwhile;
 
   //Setting up PTBR, IP and SP of child per-process
-
+print("jere");
+breakpoint;
   [READY_LIST + (32 * childPID) + 5] = childPerProcess;
   [READY_LIST + (32 * childPID) + 4] = [physicalSP];
   [READY_LIST + (32 * childPID) + 3] = SP - 1;
@@ -112,7 +134,7 @@ if (sysCallNo == 8) then
   [READY_LIST + (32 * childPID) + 14] = R7;
 
   //Copying the Per-process file entries from parent
-
+print("Copying per-process");
   counter = 15;
   while (counter < 31) do
     [READY_LIST + (32 * childPID) + counter] = [READY_LIST + (32 * parentPID) + counter];
@@ -131,7 +153,7 @@ if (sysCallNo == 8) then
   //Setting up ParentPID
 
   [READY_LIST + (32 * childPID) + 31] = parentPID;
-  
+
   [physicalSP - 2] = childPID;
   alias childSP S10;
   childSP = ([childPerProcess + 2 * ((SP - 1) / 512)] * 512) + ((SP - 1) % 512);
