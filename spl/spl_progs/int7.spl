@@ -10,8 +10,18 @@ sysCallNo = [physicalSP - 1];
 
 if (sysCallNo == 10) then
 	print ("Exiting");
-	//Checking if any process is in ready state
 	alias i S2;
+
+	//Making all waiting processes as ready
+	i = 0;
+	while (i < 32) do
+		if ([READY_LIST + (32 * i) + 1] >= 100) then
+			[READY_LIST + (32 * i) + 1] = 1;
+		endif;
+		i = i + 1;
+	endwhile;
+
+	//Checking if any process is in ready state
 	i = 0;
 	while (i < 32) do
 		if ([READY_LIST + (32 * i) + 1] == 1) then
@@ -28,7 +38,7 @@ if (sysCallNo == 10) then
 	//Checking the running process
 
 	alias PID S5;
-	print (i);
+//	print (i);
 	PID = (PTBR - 1024)/8;
 	while (([READY_LIST + (32 * PID) + 1]) != 2) do
 		PID = (PID + 1) % 32;
@@ -90,7 +100,75 @@ if (sysCallNo == 10) then
 	[ReturnAdd] = [newPCB + 4];
 	[newPCB + 1] = 2;
 	[physicalSP - 2] = 0;
+	ireturn;
 
+endif;
+
+//.........................Implementation of Wait............................
+
+if (sysCallNo == 13) then
+	alias waitingPID S2;
+	waitingPID = [physicalSP - 3];
+
+	//Checking if process is running or terminated
+
+	if ([READY_LIST + (2 * waitingPID) + 1] == 2 || [READY_LIST + (2 * waitingPID) + 1] == 0) then
+		print("Error in wait");
+		[physicalSP - 2] = -1;
+		ireturn;
+	endif;
+
+	[READY_LIST + (2 * waitingPID) + 1] = 100 + waitingPID;
+
+	//Scheduling another process now
+
+	alias PID S3;
+	PID = (waitingPID + 1)%32;
+	while (([READY_LIST + (32 * PID) + 1]) != 1) do
+		PID = (PID + 1)%32;
+	endwhile;
+
+	//Setting up the values of the new register
+
+	alias newPCB S4;
+	newPCB = READY_LIST + 32 * PID;
+	BP = [newPCB + 2];
+	SP = [newPCB + 3];
+	PTBR = [newPCB + 5];
+	PTLR = [newPCB + 6];
+	R0 = [newPCB + 7];
+	R1 = [newPCB + 8];
+	R2 = [newPCB + 9];
+	R3 = [newPCB + 10];
+	R4 = [newPCB + 11];
+	R5 = [newPCB + 12];
+	R6 = [newPCB + 13];
+	R7 = [newPCB + 14];
+	SP = SP + 1;
+
+	alias ReturnAdd S7;
+	ReturnAdd = ([PTBR + 2 * (SP / 512)]*512) + (SP % 512);
+	[ReturnAdd] = [newPCB + 4];
+	[newPCB + 1] = 2;
+	[physicalSP - 2] = 0;
+	ireturn;
+endif;
+
+//.........................Implementation of Signal...........................
+
+if (sysCallNo == 14) then
+	alias i S2;
+
+	//Making all waiting processes as ready
+	i = 0;
+	while (i < 32) do
+		if ([READY_LIST + (32 * i) + 1] >= 100) then
+			[READY_LIST + (32 * i) + 1] = 1;
+		endif;
+		i = i + 1;
+	endwhile;
+	[physicalSP - 2] = 0;
+	ireturn;
 endif;
 
 ireturn;
