@@ -39,105 +39,37 @@ if (sysCallNo == 9) then
   endif;
   load(1, basicBlock);
 
-  //Counting if there are 3 code blocks
+  //Doing work for Stage 10
 
-  alias codeBlocks S5;
   i = 0;
-  codeBlocks = 0;
-  while(i < 512) do
-    if ([SCRATCHPAD + i] != "" && [SCRATCHPAD + i] != -1) then
-      print ([SCRATCHPAD + i]);
-      codeBlocks = codeBlocks + 1;
+  while (i < 3) do
+    if ([PTBR + (2 * i) + 1] == "01" || [PTBR + (2 * i) + 1] == "11") then
+      [MEM_LIST + [PTBR + (2 * i) + 0]] = [MEM_LIST + [PTBR + (2 * i) + 0]] - 1;
+    endif;
+    if ([PTBR + (2 * i) + 1] == "00" || [PTBR + (2 * i) + 1] == "10") then
+      if ([PTBR + (2 * i) + 0] >= 448) then
+        [DISK_LIST + [PTBR + (2 * i) + 0]] = [DISK_LIST + [PTBR + (2 * i) + 0]] - 1;
+      endif;
     endif;
     i = i + 1;
   endwhile;
-  if (codeBlocks > 3) then
-    print (codeBlocks);
-    print("More codeblocks");
-    [physicalSP - 2] = -1;
-    ireturn;
-  endif;
 
-print ("Entering");
+  //Copying disk blocks to page table
 
   i = 0;
-  alias codePage S6;
-  alias currentPTBR S7;
-  currentPTBR = PAGE_TABLE + ((PTBR-1024)/8)*8;
-  codePage = 0;
-  while (i < 5) do
-    if ([currentPTBR + i] != -1) then
-      codePage = codePage + 1;
-    endif;
-    i = i + 2;
-  endwhile;
-
-print ("codePage");
-  print (codePage);
-  print ("codeBlocks");
-  print (codeBlocks);
-
-  if (codeBlocks < codePage) then //allocating pages in Page table
-    i = codeBlocks;
-    while (i < codePage) do
-      [MEM_LIST + [PTBR + (2 * i) + 0]] = 0;
+  while (i < 3) do
+    if ([SCRATCHPAD + i] != "" && [SCRATCHPAD + i] != -1) then
+      [PTBR + (2 * i) + 0] = [SCRATCHPAD + i]; //in scratchpad, the basic block is loaded
+      [PTBR + (2 * i) + 1] = "00";
+    else
       [PTBR + (2 * i) + 0] = -1;
       [PTBR + (2 * i) + 1] = "00";
-      i = i + 1;
-    endwhile;
-
-    //Sends here
-    i = 0;
-    while (i < codeBlocks) do
-      if ([SCRATCHPAD + i] == -1) then
-        load ([currentPTBR + 2 * i + 0], [SCRATCHPAD + i]);
-        [currentPTBR + 2 * i + 1] = "01";
-        [MEM_LIST + [currentPTBR + 2 * i + 0]] = 1;
-      endif;
-      i = i + 1;
-    endwhile;
-
-  endif;
-
-  alias count S8;
-  count = 0;
-  if (codeBlocks > codePage) then
-    i = 25;
-    while (count < (codeBlocks - codePage)) do
-      if ([MEM_LIST + i] == 0) then
-        count = count + 1;
-      endif;
-      if (i == 63) then
-        print("No free pages");
-        [physicalSP - 2] = -1;
-        ireturn;
-      endif;
-      i = i + 1;
-    endwhile;
-
-    count = 0;
-    i = 25;
-    while (count < (codeBlocks - codePage)) do
-      if (MEM_LIST + i == 0) then
-        [MEM_LIST + i] = 1;
-        count = count + 1;
-        [PTBR + 2 * count + 0] = i;
-        [PTBR + 2 * count + 1] = "01";
-      endif;
-      i = i + 1;
-    endwhile;
-  endif;
-
-  //Step 3 over
-  //Load the blocks of the file to memory pages
-
-  i = 0;
-  while (i < codeBlocks) do
-    load ([PTBR + 2 * i], [SCRATCHPAD + i]);
+    endif;
     i = i + 1;
   endwhile;
 
   //Closing all open instances of a file
+
   print ("Closing files");
   alias PID S9;
   PID = (PTBR - 1024)/8; //Getting the PID of the process

@@ -8,18 +8,15 @@ load (8, 2);
 //...................Loading Process 0 on the memory
 
 [READY_LIST + 0] = 0; //setting PID of init to 0
-load (25, 21); //loading init program to memory
-load (26, 22);
-load (27, 23);
 alias PTBR_Process0 S1;
 PTBR_Process0 = 1024 + 0 * 8;
-[PTBR_Process0 + 0] = 25; //Copying physical memory address to page table
-[PTBR_Process0 + 1] = "01"; // copying auxillary information to page table
-[PTBR_Process0 + 2] = 26;
-[PTBR_Process0 + 3] = "01";
-[PTBR_Process0 + 4] = 27;
-[PTBR_Process0 + 5] = "01";
-[PTBR_Process0 + 6] = 28;
+[PTBR_Process0 + 0] = 21; //Copying physical memory address to page table
+[PTBR_Process0 + 1] = "00"; // copying auxillary information to page table
+[PTBR_Process0 + 2] = 22;
+[PTBR_Process0 + 3] = "00";
+[PTBR_Process0 + 4] = 23;
+[PTBR_Process0 + 5] = "00";
+[PTBR_Process0 + 6] = 25;
 [PTBR_Process0 + 7] = "01";
 
 //.....................Setting up the PCB entry of the INIT process
@@ -28,10 +25,10 @@ PTBR_Process0 = 1024 + 0 * 8;
 [READY_LIST + 2] = 3*512;
 SP = 3*512;
 [READY_LIST + 3] = SP;
-//[READY_LIST + 4] = 0;
+[READY_LIST + 4] = 0;
 [READY_LIST + 5] = PTBR_Process0;
 [READY_LIST + 6] = 4;
-[28*512] = 0; //Setting up IP for init in the stack
+[25*512] = 0; //Setting up IP for init in the stack
 
 //.....................Setting up the Per-Process File Open table
 [READY_LIST + 15] = -1;
@@ -67,9 +64,9 @@ while (counter < 32) do
   counter = counter + 1;
 endwhile;
 
-//....................Making STATE of Init as 1
+//....................Making STATE of Init as 2
 
- [READY_LIST + 1] = 2; 
+ [READY_LIST + 1] = 2;
 
 //....................Loading FAT and df to memory
 
@@ -128,7 +125,7 @@ endwhile;
 //....................Setting up the memory free list
 
 counter = 0;
-while (counter <= 28) do
+while (counter <= 25) do
   [MEM_LIST + counter] = 1;
   counter = counter + 1;
 endwhile;
@@ -137,4 +134,18 @@ while (counter < 64) do
   counter = counter + 1;
 endwhile;
 
+//...................Clearing swap areas
+
+counter = 448;
+while (counter < 512) do
+  [DISK_LIST + counter] = 0;
+  counter = counter + 1;
+endwhile;
+
+//...................Saving the df back to disk
+
+store(6, 20);
+
+print("OS done");
+breakpoint;
 ireturn;

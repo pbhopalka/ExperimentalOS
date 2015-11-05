@@ -33,19 +33,18 @@ if (sysCallNo == 8) then
     ireturn;
   endif;
 
-
-
   //Setting the PID of the new process
   alias childPID S8;
   childPID = counter;
   [READY_LIST + (32 * childPID)] = childPID;
 breakpoint;
-  //Duplicating the process
+
+  //Duplicating the process (Step 4)
 
   alias parentPerProcess S5;
   alias childPerProcess S6;
-  parentPerProcess = PAGE_TABLE + (parentPID * 8);
-  childPerProcess = PAGE_TABLE + (childPID * 8);
+  parentPerProcess = PAGE_TABLE + (parentPID * 8); //each page table can have 4 entries
+  childPerProcess = PAGE_TABLE + (childPID * 8); //and each entry will have 2 info: pg no and auxillary info
 print("ParentPID");
 print(parentPID);
 print("ChildPID");
@@ -56,6 +55,9 @@ print(childPID);
   validPages = 0;
   counter = 0;
   while (counter < 4) do
+
+  //not sure about the unequal sign
+  
     if ([parentPerProcess + 2*counter + 1] != "01" || [parentPerProcess + 2*counter + 1] != "11") then
       validPages = validPages + 1;
     endif;
