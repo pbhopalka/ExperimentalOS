@@ -70,7 +70,7 @@ if (sysCallNo == 9) then
 
   //Closing all open instances of a file
 
-  print ("Closing files");
+  //print ("Closing files");
   alias PID S9;
   PID = (PTBR - 1024)/8; //Getting the PID of the process
   alias sysFileTable S10;
@@ -90,7 +90,7 @@ if (sysCallNo == 9) then
     endif;
   endwhile;
 
-print ("All files closed");
+//print ("All files closed");
 breakpoint;
   SP = 3 * 512;
 

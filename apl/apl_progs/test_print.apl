@@ -1,28 +1,11 @@
-integer main()
-{
-	print("STARTED");
-	integer pid;
-	pid = Fork();
-	if (pid == -1) then
-		print("ERR1");
-	endif;
-	print("Hello");
-	pid = Fork();
-	if (pid == -1) then
-		print("ERR2");
-	endif;
-	print("2");
-	pid = Fork();
-	if (pid == -1) then
-		print("ERR3");
-	endif;
-	print("3");
-	pid = Fork();
-	if (pid == -1) then
-		print("ERR4");
-	endif;
-
-	//pid = Exec("print.xsm");
-
+integer main(){
+	integer a,b;
+	a = Fork();
+	print("After fork");
+	b = 0;
+	while (b < 10) do
+		print(b);
+		b = b + 1;
+	endwhile;
 	return 0;
 }

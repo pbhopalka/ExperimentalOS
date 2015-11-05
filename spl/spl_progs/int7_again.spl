@@ -11,12 +11,16 @@ sysCallNo = [physicalSP - 1];
 if (sysCallNo == 10) then
 	print ("Exiting");
 	alias i S2;
-
+	 breakpoint;
+	alias processID S9;
+	processID = (PTBR - 1024)/8;
 	//Making all waiting processes as ready
 	i = 0;
 	while (i < 32) do
-		if ([READY_LIST + (32 * i) + 1] >= 100) then
-			[READY_LIST + (32 * i) + 1] = 1;
+		alias page S12;
+		page = READY_LIST + (32 * i);
+		if ([page + 1] == (100 + processID)) then
+			[page + 1] = 1;
 		endif;
 		i = i + 1;
 	endwhile;
@@ -30,7 +34,7 @@ if (sysCallNo == 10) then
 		i = i + 1;
 	endwhile;
 	if (i == 32) then
-		print("No other");
+		//print("No other");
 		halt;
 		ireturn;
 	endif;
@@ -40,10 +44,7 @@ if (sysCallNo == 10) then
 	alias PID S5;
 //	print (i);
 	PID = (PTBR - 1024)/8;
-	while (([READY_LIST + (32 * PID) + 1]) != 2) do
-		PID = (PID + 1) % 32;
 
-	endwhile;
 	i = 15;
 	alias perProcessTable S3;
 	while (i < 31) do
@@ -82,7 +83,7 @@ if (sysCallNo == 10) then
 	while (([READY_LIST + (32 * PID) + 1]) != 1) do
 		PID = (PID + 1)%32;
 	endwhile;
-
+	
 	//Setting up the values of the new register
 
 	alias newPCB S3;
@@ -116,20 +117,42 @@ if (sysCallNo == 13) then
 	alias waitingPID S2;
 	waitingPID = [physicalSP - 3];
 
+	print("Enter wait");
+	alias currentPID S8;
+	currentPID = (PTBR - 1024)/8;
 	//Checking if process is running or terminated
 
-	if ([READY_LIST + (2 * waitingPID) + 1] == 2 || [READY_LIST + (2 * waitingPID) + 1] == 0) then
-		print("Error in wait");
+	alias process S13;
+	process = READY_LIST + (2 * waitingPID);
+	if ([process + 1] == 2 || [process + 1] == 0) then
+		//print("Error in wait");
 		[physicalSP - 2] = -1;
 		ireturn;
 	endif;
 
-	[READY_LIST + (2 * waitingPID) + 1] = 100 + waitingPID;
+	alias currentPCB S10;
+	currentPCB = READY_LIST + 32 * currentPID;
+	[currentPCB + 1] = 100 + waitingPID; //state is ready
+	[currentPCB + 2] = BP;
+	[currentPCB + 3] = SP - 1;
+	alias physicalSP S2;
+	physicalSP = ([PTBR + 2 * (SP/512)] * 512) + (SP % 512);
+	[currentPCB + 4] = [physicalSP]; //save IP of current process from the stack
+	[currentPCB + 5] = PTBR;
+	[currentPCB + 6] = PTLR;
+	[currentPCB + 7] = R0;
+	[currentPCB + 8] = R1;
+	[currentPCB + 9] = R2;
+	[currentPCB + 10] = R3;
+	[currentPCB + 11] = R4;
+	[currentPCB + 12] = R5;
+	[currentPCB + 13] = R6;
+	[currentPCB + 14] = R7;
 
 	//Scheduling another process now
 
 	alias PID S3;
-	PID = (waitingPID + 1)%32;
+	PID = (currentPID + 1)%32;
 	while (([READY_LIST + (32 * PID) + 1]) != 1) do
 		PID = (PID + 1)%32;
 	endwhile;
