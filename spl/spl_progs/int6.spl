@@ -1,0 +1,193 @@
+alias physicalSP S0;
+physicalSP = ([PTBR + 2 * (SP/512)] * 512) + (SP % 512);
+
+//Getting system call number from stack
+
+alias sysCallNo S1;
+sysCallNo = [physicalSP - 1];
+
+//....................Implementation of Exec.............................
+
+if (sysCallNo == 9) then
+  alias filename S2;
+  filename = [physicalSP - 3];
+
+  //Checking if the file exists
+
+  alias i S3;
+  i = 0;
+  while (i < 64) do
+    if ([i + FAT] == filename) then
+      break;
+    endif;
+    i = i + 8;
+  endwhile;
+  if (i == 64) then
+    print ("No file");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+
+  //Loading the basic block of file to scratchpad
+
+  alias basicBlock S4;
+  basicBlock = [FAT + i + 2];
+  if (basicBlock == -1) then
+    print("Invalid Block");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+  load(1, basicBlock);
+
+  //Counting if there are 3 code blocks
+
+  alias codeBlocks S5;
+  i = 0;
+  codeBlocks = 0;
+  while(i < 512) do
+    if ([SCRATCHPAD + i] != "" && [SCRATCHPAD + i] != -1) then
+      print ([SCRATCHPAD + i]);
+      codeBlocks = codeBlocks + 1;
+    endif;
+    i = i + 1;
+  endwhile;
+  if (codeBlocks > 3) then
+    print (codeBlocks);
+    print("More codeblocks");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+
+print ("Entering");
+
+  i = 0;
+  alias codePage S6;
+  alias currentPTBR S7;
+  currentPTBR = PAGE_TABLE + ((PTBR-1024)/8)*8;
+  codePage = 0;
+  while (i < 5) do
+    if ([currentPTBR + i] != -1) then
+      codePage = codePage + 1;
+    endif;
+    i = i + 2;
+  endwhile;
+
+print ("codePage");
+  print (codePage);
+  print ("codeBlocks");
+  print (codeBlocks);
+
+  if (codeBlocks < codePage) then //allocating pages in Page table
+    i = codeBlocks;
+    while (i < codePage) do
+      [MEM_LIST + [PTBR + (2 * i) + 0]] = 0;
+      [PTBR + (2 * i) + 0] = -1;
+      [PTBR + (2 * i) + 1] = "00";
+      i = i + 1;
+    endwhile;
+
+    //Sends here
+    i = 0;
+    while (i < codeBlocks) do
+      if ([SCRATCHPAD + i] == -1) then
+        load ([currentPTBR + 2 * i + 0], [SCRATCHPAD + i]);
+        [currentPTBR + 2 * i + 1] = "01";
+        [MEM_LIST + [currentPTBR + 2 * i + 0]] = 1;
+      endif;
+      i = i + 1;
+    endwhile;
+
+  endif;
+
+  alias count S8;
+  count = 0;
+  if (codeBlocks > codePage) then
+    i = 25;
+    while (count < (codeBlocks - codePage)) do
+      if ([MEM_LIST + i] == 0) then
+        count = count + 1;
+      endif;
+      if (i == 63) then
+        print("No free pages");
+        [physicalSP - 2] = -1;
+        ireturn;
+      endif;
+      i = i + 1;
+    endwhile;
+
+    count = 0;
+    i = 25;
+    while (count < (codeBlocks - codePage)) do
+      if (MEM_LIST + i == 0) then
+        [MEM_LIST + i] = 1;
+        count = count + 1;
+        [PTBR + 2 * count + 0] = i;
+        [PTBR + 2 * count + 1] = "01";
+      endif;
+      i = i + 1;
+    endwhile;
+  endif;
+
+  //Step 3 over
+  //Load the blocks of the file to memory pages
+
+  i = 0;
+  while (i < codeBlocks) do
+    load ([PTBR + 2 * i], [SCRATCHPAD + i]);
+    i = i + 1;
+  endwhile;
+
+  //Closing all open instances of a file
+  print ("Closing files");
+  alias PID S9;
+  PID = (PTBR - 1024)/8; //Getting the PID of the process
+  alias sysFileTable S10;
+  alias fileDescriptor S11;
+  fileDescriptor = 0;
+  while (fileDescriptor < 8) do
+    sysFileTable = [READY_LIST + 32 * PID + (2 * fileDescriptor) + 15]; //From PCB
+    if (sysFileTable == -1) then
+      fileDescriptor = fileDescriptor + 1;
+    else
+      [sysFileTable + 1] = [sysFileTable + 1] - 1;
+      if ([sysFileTable + 1] == 0) then
+        [sysFileTable] = -1;
+      endif;
+      sysFileTable = -1;
+      fileDescriptor = fileDescriptor + 1;
+    endif;
+  endwhile;
+
+print ("All files closed");
+breakpoint;
+  SP = 3 * 512;
+
+  alias newSP S12;
+  newSP = ([PTBR + 2 * (SP/512)] * 512) + (SP % 512);
+  [newSP] = 0;
+  //[physicalSP] = 0;
+  //[physicalSP - 2] = 0;
+  ireturn;
+
+endif;
+
+//.........................Implementation of Getpid...........................
+
+if (sysCallNo == 11) then
+  alias PID S2;
+  PID = (PTBR - 1024) / 8;
+  [physicalSP - 2] = PID;
+  ireturn;
+endif;
+
+//........................Implementation of Getppid............................
+
+if (sysCallNo == 12) then
+  alias PID S2;
+  PID = (PTBR - 1024) / 8;
+  [physicalSP - 2] = [READY_LIST + (2 * PID) + 31];
+  ireturn;
+endif;
+
+[physicalSP - 2] = -1;
+ireturn;

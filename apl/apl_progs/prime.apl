@@ -3,7 +3,8 @@ decl
 enddecl
 
 integer main(){
-	read (n);
+//	read (n);
+n=20;
 	integer i, count, j;
 	j = 2;
 	while (j <= n) do
@@ -22,4 +23,3 @@ integer main(){
 	endwhile;
 	return 0;
 }
-			 

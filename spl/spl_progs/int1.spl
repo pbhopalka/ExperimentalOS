@@ -120,7 +120,7 @@ if (sysCallNo == 4) then
 
 	//Updating basic block, data block of the file to be deleted
 	//Updating FAT entry, disk free list
-	
+
 	alias basicBlock S4;
 	basicBlock = [FATentry + 2];
 	load (1, basicBlock);
@@ -139,7 +139,7 @@ if (sysCallNo == 4) then
 			endwhile;
 			store(1, dataBlock);
 			load (1, basicBlock);
-			[DISK_LIST + dataBlock] = 0;
+			[DISK_LIST + dataBlock] = 0; //update df
 			dataBlock = "";
 		endif;
 		i = i + 1;
