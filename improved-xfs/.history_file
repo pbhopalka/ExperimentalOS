@@ -1,43 +1,6 @@
-load --int=5 ../spl/spl_progs/int5.xsm
-load --exhandler ../spl/spl_progs/exhandler.xsm
-load --exhandler ../spl/spl_progs/exhandler.xsm
-load --exhandler ../spl/spl_progs/exhandler.xsm
-load --exhandler ../spl/spl_progs/exhandler.xsm
-load --init ../apl/apl_progs/shell.
-load --init ../apl/apl_progs/shell.xsm
-ls
-load --exec ../apl/apl_progs/even_1.xsm
-load --exec ../apl/apl_progs/odd_1.xsm
-ls
-load --int=7 ../spl/spl_progs/int7_again.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --init ../apl/apl_progs/shell.xsm
-load --init ../apl/apl_progs/shell.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --init ../apl/apl_progs/shell.xsm
-load --init ../apl/apl_progs/shell.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --init ../apl/apl_progs/test_print.xsm
-load --init ../apl/apl_progs/test_print.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --init ../apl/apl_progs/shell.xsm
-load --int=7 ..
-load --init ../apl/apl_progs/shell.xsm
-ls
-load --init ../apl/apl_progs/sample.xsm
 load --init ../apl/apl_progs/shell.xsm
 load --exec ../apl/apl_progs/master.xsm
-load --exec ../apl/apl_progs/ex10.apl
+load --exec ../apl/apl_progs
 load --exec ../apl/apl_progs/ex10.xsm
 load --int=6 ../spl/spl_progs/int6.xsm
 load --exec ../apl/apl_progs/ex10.xsm
@@ -48,3 +11,40 @@ rm --exec ex10.xsm
 load --exec ../apl/apl_progs/ex10.xsm
 load --int=7 ../spl/spl_progs/int7.xsm
 load --int=6 ../spl/spl_progs/int6.xsm
+rm --exec master.xsm
+load --exec ../apl/apl_progs/master.xsm
+ls
+load --int=5 ../spl/spl_progs/int5.xsm
+load --init ..
+load --int=7 ../spl/spl_progs/int7.xsm
+load --init ../apl/apl_progs/shell.xsm
+ls
+load --init ../apl/apl_progs/shell.xsm
+load --exec ../apl/apl_progs/master.xsm
+rm --exec master.xsm
+load --exec ../apl/apl_progs/master.xsm
+rm --exec master.xsm
+load --exec ../apl/apl_progs/master.xsm
+rm --exec master.xsm
+load --exec ../apl/apl_progs/master.xsm
+rm --exec ex10.xsm
+load --exec ../apl/apl_progs/ex10.xsm
+rm --exec master.xsm
+load --exec ../apl/apl_progs/master.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+rm --exec ex10.xsm
+load --exec ../apl/apl_progs/ex10.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --int=7 ../spl/spl_progs/int7.xsm
+load --init ../../Desktop/int5.xsm
+load --int=5 ../../Desktop/int5.xsm
+load --int=6 ../../Desktop/int6.xsm
+load --init ../apl/apl_progs/shell.xsm
+load --int=5 ../../Desktop/int5.xsm
+ls
+load --int=5 ../../Desktop/int5.xsm
+load --int=5 ../spl/spl_progs/int5.xsm
+load --int=6 ../spl/spl_progs/int6.xsm
+clear

@@ -10,7 +10,7 @@ integer main()
 		while(childpid != -1) do
 			//print("Parent");
 			print(childpid);
-			read (input);
+			//read (input);
 		endwhile;
 	endif;
   return 0;
