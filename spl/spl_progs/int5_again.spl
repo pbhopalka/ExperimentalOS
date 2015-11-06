@@ -45,9 +45,11 @@ if (sysCallNo == 8) then
     while (PID < 32) do
       counter = 0;
       while (counter < 3) do
-        if ([PAGE_TABLE + (8 * PID) + (2 * counter) + 1] == "11" || [PAGE_TABLE + (8 * PID) + (2 * counter) + 1] == "01") then
-          if ([PAGE_TABLE + (8 * PID) + (2 * counter) + 1] == "11") then
-            [PAGE_TABLE + (8 * PID) + (2 * counter) + 1] = "01";
+        alias page S11;
+        page = PAGE_TABLE + (8 * PID) + (2 * counter);
+        if ([page + 1] == "11" || [page + 1] == "01") then
+          if ([page + 1] == "11") then
+            [page + 1] = "01";
           else //if reference bit is 0
             alias j S9;
             j = 448;
@@ -58,11 +60,11 @@ if (sysCallNo == 8) then
               endif;
               j = j + 1;
             endwhile;
-            store([PAGE_TABLE + (8 * PID) + (2 * counter)] , j);
+            store([page] , j);
             [DISK_LIST + j] = 1;
-            i = [PAGE_TABLE + (8 * PID) + (2 * counter)];
-            [PAGE_TABLE + (8 * PID) + (2 * counter)] = j;
-            [PAGE_TABLE + (8 * PID) + (2 * counter) + 1] = "00";
+            i = [page]; //changing i here and setting to victim page
+            [page] = j;
+            [page + 1] = "00";
             break;
           endif;
         endif;
