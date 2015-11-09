@@ -1,7 +1,7 @@
 integer main(){
   string input;
   integer pid;
-  print ("Welcome to PB's OS");
+  print ("PB's OS");
   while (input != "exit") do
     print ("$->");
     read (input);

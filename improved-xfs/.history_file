@@ -1,50 +1,50 @@
-load --init ../apl/apl_progs/shell.xsm
-load --exec ../apl/apl_progs/master.xsm
-load --exec ../apl/apl_progs
-load --exec ../apl/apl_progs/ex10.xsm
-load --int=6 ../spl/spl_progs/int6.xsm
-load --exec ../apl/apl_progs/ex10.xsm
-rm ex10.xsm
-rm --exec ex10.xsm
-load --exec ../apl/apl_progs/ex10.xsm
-rm --exec ex10.xsm
-load --exec ../apl/apl_progs/ex10.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=6 ../spl/spl_progs/int6.xsm
-rm --exec master.xsm
-load --exec ../apl/apl_progs/master.xsm
+rm --data 2.dat
+rm --data 3.dat
+rm --data 4.dat
+rm --data 5.dat
+rm --data 6.dat
+rm --data 7.dat
+cat 1.dat
+cat 2.dat
+cat 3.dat
+cat 4.dat
+cat 5.dat
+cat 6.dat
+cat 7.dat
+cat 5.dat
 ls
-load --int=5 ../spl/spl_progs/int5.xsm
-load --init ..
-load --int=7 ../spl/spl_progs/int7.xsm
-load --init ../apl/apl_progs/shell.xsm
+rm --data file1.dat
+rm --data 1.dat
+rm --data 2.dat
+rm --data 3.dat
+rm --data 4.dat
 ls
-load --init ../apl/apl_progs/shell.xsm
-load --exec ../apl/apl_progs/master.xsm
-rm --exec master.xsm
-load --exec ../apl/apl_progs/master.xsm
-rm --exec master.xsm
-load --exec ../apl/apl_progs/master.xsm
-rm --exec master.xsm
-load --exec ../apl/apl_progs/master.xsm
-rm --exec ex10.xsm
-load --exec ../apl/apl_progs/ex10.xsm
-rm --exec master.xsm
-load --exec ../apl/apl_progs/master.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-rm --exec ex10.xsm
-load --exec ../apl/apl_progs/ex10.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --int=7 ../spl/spl_progs/int7.xsm
-load --init ../../Desktop/int5.xsm
-load --int=5 ../../Desktop/int5.xsm
-load --int=6 ../../Desktop/int6.xsm
-load --init ../apl/apl_progs/shell.xsm
-load --int=5 ../../Desktop/int5.xsm
+cat file1.dat
+load --init ../apl/apl_progs/
+load --init ../apl/apl_progs/final2.xsm
 ls
-load --int=5 ../../Desktop/int5.xsm
-load --int=5 ../spl/spl_progs/int5.xsm
-load --int=6 ../spl/spl_progs/int6.xsm
-clear
+rm --data file1.dat
+rm --data 1.dat
+rm --data 2.dat
+rm --data 3.dat
+rm --data 4.dat
+rm --data 5.dat
+rm --data 6.dat
+rm --data 7.dat
+ls
+ls
+ls
+rm --data file1.dat
+rm --data 1.dat
+rm --data 2.dat
+rm --data 3.dat
+rm --data 4.dat
+ls
+load --init ../apl/apl_progs/final2.xsm
+load --os ../spl/spl_progs/os_startup.xsm
+ls
+cat file1.dat
+cat 1.dat
+cat 2.dat
+cat 3.dat
+cat 4.dat

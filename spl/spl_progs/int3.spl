@@ -45,7 +45,7 @@ if (sysCallNo == 6) then
   //Checking the validity of newLseek
 
   alias FATindex S5;
-  FATindex = [[processFileTable]];
+  FATindex = [[[processFileTable]]];
   alias i S6;
   i = 0;
   while (i < [FATindex + 1]) do
@@ -62,7 +62,7 @@ if (sysCallNo == 6) then
 
   //Making the change
 
-  [processFileTable + 1] = newLseek;
+  [[processFileTable + 1]] = newLseek;
   [physicalSP - 2] = 0;
 endif;
 
@@ -108,29 +108,31 @@ if (sysCallNo == 7) then
   //Find the basic block from the FAT table and load to scratchpad
 
   alias FATindex S5;
-  FATindex = [[processFileTable]]; //there are 2 brackets. Intentional.
+  FATindex = [[[processFileTable]]]; //there are 3 brackets. Intentional.
                                    //See figure at beginning of Stage 8
+                                   //Modification here due to additional data structure in between
   alias basicBlock S6;
   basicBlock = [FATindex + 2];
   load (1, basicBlock);
-  if ([processFileTable + 1] == [FATindex + 1]) then
+  if ([[processFileTable + 1]] == [FATindex + 1]) then
     print("EOF");
     [physicalSP - 2] = -1;
     ireturn;
   endif;
   alias lSeekBlock S7;
   alias dataBlock S8;
-  lSeekBlock = [processFileTable + 1]/512;
+  lSeekBlock = [[processFileTable + 1]]/512;
   dataBlock = [SCRATCHPAD + lSeekBlock];
 
   //Reading from the file
 
   load (1, dataBlock);
   alias offset S9;
-  offset = [processFileTable + 1] % 512;
+  offset = [[processFileTable + 1]] % 512;
 //  [wordToRead] = [SCRATCHPAD + offset];
   [physicalSP - 3] = [SCRATCHPAD + offset];
-  [processFileTable + 1] = [processFileTable + 1] + 1;
+  //print([SCRATCHPAD + offset]);
+  [[processFileTable + 1]] = [[processFileTable + 1]] + 1;
   [physicalSP - 2] = 0;
 endif;
 

@@ -146,6 +146,15 @@ endwhile;
 
 store(6, 20);
 
-print("OS done");
+//..................Initializing the unallocated space in Page 2
+//..................For modification
+
+counter = 1472;
+while (counter < (1472 + 64)) do
+  [counter] = -1;
+  counter = counter + 1;
+endwhile;
+
+//print("OS done");
 breakpoint;
 ireturn;

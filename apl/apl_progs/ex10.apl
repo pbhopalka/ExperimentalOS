@@ -7,7 +7,7 @@ integer main()
 	print(pid);
 	read(i);
 	s=0;
-	while(s<150) do
+	while(s<50) do
 	s = s+1;
 	endwhile;
 	i = i + pid*1000;

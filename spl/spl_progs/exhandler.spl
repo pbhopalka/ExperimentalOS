@@ -24,7 +24,7 @@ if (Cause != 0) then
   inline "JMP 11776";
 endif;
 
-breakpoint;
+
 
 if (VPagenum == -1) then
   print("Invalid add");
@@ -41,7 +41,7 @@ while (i < 64) do
 endwhile;
 
 //print("Entr pg replace");
-breakpoint;
+
 //Page-Replacement Algorithm
 
 if (i == 64) then
@@ -56,11 +56,9 @@ if (i == 64) then
       if ([pagetable + (2 * counter) + 1] == "10" && [MEM_LIST + [pagetable + (2 * counter)]] == 1) then
         [pagetable + (2 * counter) + 1] = "00";
       endif;
-      if ([pagetable + (2 * counter) + 1] == "11" && [MEM_LIST + [pagetable + (2 * counter)]] == 1) then
-          [pagetable + (2 * counter) + 1] = "01";
-      endif;
 
-      if ([pagetable + (2 * counter) + 1] == "01") then //if reference bit is 0
+      if ([pagetable + (2 * counter) + 1] == "01" && [MEM_LIST + [pagetable + (2 * counter)]] == 1) then
+                                      //if reference bit is 0
         alias j S9;
         j = 448;
         while ([DISK_LIST + j] != 0) do
@@ -77,6 +75,9 @@ if (i == 64) then
         [pagetable + (2 * counter) + 1] = "00";
         break;
       endif;
+      if ([pagetable + (2 * counter) + 1] == "11" && [MEM_LIST + [pagetable + (2 * counter)]] == 1) then
+          [pagetable + (2 * counter) + 1] = "01";
+      endif;
       counter = counter + 1;
     endwhile;
     if (i != 64) then
@@ -89,7 +90,6 @@ if (i == 64) then
 endif;
 
 //print("Pg repl over");
-breakpoint;
 //After page-replacement algorithm
 
 alias physicalPage S4;
@@ -107,7 +107,7 @@ endif;
 [PTBR + (2 * VPagenum) + 1] = "11";
 [MEM_LIST + i] = 1;
 //print("Set newSP");
-breakpoint;
+
 
 SP = SP + 1;
 alias newphysicalSP S6;

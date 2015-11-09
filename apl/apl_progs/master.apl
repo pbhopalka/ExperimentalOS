@@ -13,9 +13,9 @@ integer main()
 			break;
 		endif;
 		i=i+1;
-
+s=Wait(pid);
 	endwhile;
-	s=Wait(pid);
+
 
 	return 0;
 }

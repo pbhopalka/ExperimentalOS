@@ -1,3 +1,5 @@
+define SEEKPOS 1472;
+
 alias physicalSP S0;
 physicalSP = ([PTBR + 2 * (SP/512)] * 512) + (SP % 512);
 
@@ -70,11 +72,29 @@ if (sysCallNo == 2) then
     ireturn;
   endif;
 
+  //Traversing through the SEEKPOS table to find empty slot
+
+  alias seekTable S7;
+  seekTable = SEEKPOS + 0;
+  while(seekTable < SEEKPOS + 64) do
+    if ([seekTable] == -1) then
+      break;
+    endif;
+    seekTable = seekTable + 2;
+  endwhile;
+  if (seekTable == SEEKPOS + 64) then
+    print("Seek not empty");
+    [physicalSP - 2] = -1;
+    ireturn;
+  endif;
+
   //Entering details into the PCB (per-process file table)
   //and system-wide open file table
 
-  [READY_LIST + 32 * PID + i] = sysFileTable;
-  [READY_LIST + 32 * PID + (i+1)] = 0; //Setting the LSEEK position
+  [seekTable] = sysFileTable;
+  [seekTable + 1] = 0;
+  [READY_LIST + 32 * PID + i] = seekTable;
+  [READY_LIST + 32 * PID + (i+1)] = seekTable + 1; //Setting the LSEEK position
   [sysFileTable] = FATentry;
   [sysFileTable + 1] = [sysFileTable + 1] + 1;
   [physicalSP - 2] = (i - 15)/2; //sysFileTable;
