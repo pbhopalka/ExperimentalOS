@@ -1,7 +1,5 @@
 alias physicalSP S0;
-physicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
-
-//Getting system call number from stack
+physicalSP = ([PTBR + 2 * (SP/512)] * 512) + (SP % 512);
 
 alias sysCallNo S1;
 sysCallNo = [physicalSP - 1];
@@ -10,115 +8,114 @@ sysCallNo = [physicalSP - 1];
 
 if (sysCallNo == 8) then
 
-  //Finding Parent's PID
 
-  alias parentPID S2;
-  parentPID = (PTBR-1024)/8;
+  //Finding free PCB slot
+  alias PCB S2;
+  PCB = 0;
+  while ([READY_LIST + (32 * PCB) + 1] != 0) do
+    if (PCB >= 31) then
+      //print("No free PCB");
+      [physicalSP - 2] = -1;
+      ireturn;
+    endif;
+    PCB = PCB + 1;
+  endwhile;
 
-  // Checking if any PCB entry is empty
+  //Setting up the childPID
+  alias childPID S3;
+  childPID = PCB;
+  [READY_LIST + (32 * childPID) + 0] = childPID;
 
-  alias counter S3;
-  alias PCB S4;
-  counter = 0;
-  while (counter < 32) do
-    if ([READY_LIST + (32 * counter) + 1] == 0) then
+  //Changing Step 4 for Stage 10
+
+  alias i S2; //Reusing S2
+  i = 25;
+  while (i < 64) do
+    if ([MEM_LIST + i] == 0) then
       break;
     endif;
-    counter = counter + 1;
+    i = i + 1;
+    //print(i);
   endwhile;
 
-  if (counter == 32) then
-    print("No free PCB");
-    [physicalSP - 2] = -1;
-    ireturn;
-  endif;
-
-  //Setting the PID of the new process
-  alias childPID S8;
-  childPID = counter;
-  [READY_LIST + (32 * childPID)] = childPID;
-breakpoint;
-
-  //Duplicating the process (Step 4)
-
-  alias parentPerProcess S5;
-  alias childPerProcess S6;
-  parentPerProcess = PAGE_TABLE + (parentPID * 8); //each page table can have 4 entries
-  childPerProcess = PAGE_TABLE + (childPID * 8); //and each entry will have 2 info: pg no and auxillary info
-print("ParentPID");
-print(parentPID);
-print("ChildPID");
-print(childPID);
-  //Counting number of valid pages
-
-  alias validPages S11;
-  validPages = 0;
-  counter = 0;
-  while (counter < 4) do
-
-  //not sure about the unequal sign
-  
-    if ([parentPerProcess + 2*counter + 1] != "01" || [parentPerProcess + 2*counter + 1] != "11") then
-      validPages = validPages + 1;
-    endif;
-    counter = counter + 1;
-  endwhile;
-
-  //Checking if memory list is free
-
-  alias page S7;
-  page = 0;
-  counter = 25;
-  while (counter < 64) do
-    if ([MEM_LIST + counter] == 0) then
-      [childPerProcess + 2*page] = counter; //Setting up different pages in Page Table for child process
-      page = page + 1;
-      if (page >= validPages) then
-        break;
-      endif;
-    endif;
-    counter = counter + 1;
-  endwhile;
-  if (counter == 64) then
-    print("No free Memory");
-    [physicalSP - 2] = -1;
-    ireturn;
-  endif;
-breakpoint;
-print("setting mem");
-
-  //Setting the Memory list and copying all the info from parent to child
-  counter = 29;
-  page = 0;
-  while (counter < 64) do
-    if ([MEM_LIST + counter] == 0) then
-      [childPerProcess + (2*page) + 1] = [parentPerProcess + (2*page) + 1];
-      [MEM_LIST + counter] = 1;
-      alias i S13;
-      i = 0;
-print("Copying all the info");
-print([childPerProcess + (2*page) + 0]);
-print([parentPerProcess + (2*page) + 0]);
-      while (i < 512) do
-        [[childPerProcess + (2*page) + 0] * 512 + i] = [[parentPerProcess + (2*page) + 0] * 512 + i];
-        i = i + 1;
+  if (i == 64) then //Page replacement algo
+    alias PID S7;
+    PID = (PTBR - 1024)/8;
+    alias counter S8;
+    while (PID < 32) do
+      counter = 0;
+      while (counter < 3) do
+        alias page S11;
+        page = PAGE_TABLE + (8 * PID) + (2 * counter);
+        if ([page + 1] == "11" || [page + 1] == "01") then
+          if ([page + 1] == "11") then
+            [page + 1] = "01";
+          else //if reference bit is 0
+            alias j S9;
+            j = 448;
+            while ([DISK_LIST + j] != 0) do
+              if (j == 511) then
+                //print("Not swapping");
+                inline "JMP 11776";
+              endif;
+              j = j + 1;
+            endwhile;
+            store([page] , j);
+            [DISK_LIST + j] = 1;
+            i = [page]; //changing i here and setting to victim page
+            [page] = j;
+            [page + 1] = "00";
+            break;
+          endif;
+        endif;
+        counter = counter + 1;
       endwhile;
-      page = page + 1;
-      if (page > 3) then
+      if (i != 64) then
         break;
       endif;
-    //else
-//print("doing -1");
-  //    [childPerProcess + 2*page] = -1;
-    //  [childPerProcess + 2*page + 1] = [parentPerProcess + 2*page + 1];
+      PID = (PID + 1) % 32;
+    endwhile;
+  endif;
+
+  //Setting up the MEM_LIST and copying the stack as that of parent
+
+  [MEM_LIST + i] = 1;
+  alias counter S4;
+  counter = 0;
+  while (counter < 512) do
+    [(i*512)+ counter] = [([PTBR + 6]*512) + counter];
+    counter = counter + 1;
+  endwhile;
+
+  //Allocating the stack space to the child
+
+  alias PTBR_childProcess S5;
+  PTBR_childProcess = PAGE_TABLE + (childPID * 8);
+  [PTBR_childProcess + 6] = i;
+  [PTBR_childProcess + 7] = "01";
+
+  //Copying contents of parent process to the child
+
+  counter = 0;
+  while (counter < 3) do
+    [PTBR_childProcess + (2 * counter) + 0] = [PTBR + (2 * counter) + 0];
+    [PTBR_childProcess + (2 * counter) + 1] = [PTBR + (2 * counter) + 1];
+    if ([PTBR_childProcess + (2 * counter) + 1] == "01" || [PTBR_childProcess + (2 * counter) + 1] == "11") then
+      [MEM_LIST + [PTBR_childProcess + (2 * counter) + 0]] = [MEM_LIST + [PTBR_childProcess + (2 * counter) + 0]] + 1;
+    endif;
+    if ([PTBR_childProcess + (2 * counter) + 1] == "00" || [PTBR_childProcess + (2 * counter) + 1] == "10") then
+      if ([PTBR_childProcess + (2 * counter) + 0] >= 448) then
+        [DISK_LIST + [PTBR_childProcess + (2 * counter) + 0]] = [DISK_LIST + [PTBR_childProcess + (2 * counter) + 0]] + 1;
+        store (6, 20);
+      endif;
     endif;
     counter = counter + 1;
   endwhile;
 
-  //Setting up PTBR, IP and SP of child per-process
-print("jere");
-breakpoint;
-  [READY_LIST + (32 * childPID) + 5] = childPerProcess;
+  //Step 4 should be complete by now. Check if everything is done.
+
+  //Setting up the PTBR, IP and SP
+  [READY_LIST + (32 * childPID) + 5] = PTBR_childProcess;
   [READY_LIST + (32 * childPID) + 4] = [physicalSP];
   [READY_LIST + (32 * childPID) + 3] = SP - 1;
 
@@ -135,12 +132,15 @@ breakpoint;
   [READY_LIST + (32 * childPID) + 13] = R6;
   [READY_LIST + (32 * childPID) + 14] = R7;
 
-  //Copying the Per-process file entries from parent
-print("Copying per-process");
+  //Copying the per-process File Table
+
+  alias parentPID S6;
+  parentPID = (PTBR - 1024)/8;
   counter = 15;
   while (counter < 31) do
     [READY_LIST + (32 * childPID) + counter] = [READY_LIST + (32 * parentPID) + counter];
     [READY_LIST + (32 * childPID) + counter + 1] = [READY_LIST + (32 * parentPID) + counter + 1];
+    alias PCB S12;
     PCB = [READY_LIST + (32 * childPID) + counter];
     if (PCB != -1) then
 		  [PCB*2 + 1] = [PCB*2 + 1] + 1;//incrementing count in system-wide open file table
@@ -148,6 +148,7 @@ print("Copying per-process");
     counter = counter + 2;
   endwhile;
 
+  breakpoint;
   //Setting state of child process as ready
 
   [READY_LIST + (32 * childPID) + 1] = 1;
@@ -158,9 +159,10 @@ print("Copying per-process");
 
   [physicalSP - 2] = childPID;
   alias childSP S10;
-  childSP = ([childPerProcess + 2 * ((SP - 1) / 512)] * 512) + ((SP - 1) % 512);
+  childSP = ([PTBR_childProcess + 2 * ((SP - 1) / 512)] * 512) + ((SP - 1) % 512);
   [childSP - 1] = -2;
 
+//print("Exit fork");
 endif;
 
 ireturn;
